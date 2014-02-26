@@ -8,68 +8,25 @@
             <div id="matched-function" class="page-header">
                 <h3>Minions executing this job</h3>
             </div>
-            <div class="list-group">
+            <div class="list-group" style="overflow: auto; height: 600px;">
                 {% for minion in minions %}
                 <a href="#" id="btn-{{ minion }}" class="list-group-item" onclick="$.ajax({ url:'/_get_function_data/{{ minion}}/{{ request.view_args.get('jid') }}', success:function(result) {generate_content(result, '{{ time }}'); }}); $(this).siblings('a').removeClass('active'); $(this).addClass('active');"><strong>{{ minion }}</strong></a>
                 {% endfor %}
             </div>
         </div>
-        <div id="content" class="col-xs-8 well">
-            <table class='table table-bordered table-striped table-hover hidden'>
-                <tbody>
-                    <tr>
-                        <td>Minion ID:</td>
-                        <td id="minion"></td>
-                        <td id="hist-btn-td" rowspan="2"><a id="hist-btn" class="btn btn-primary btn-block btn-lg" href="">Execution History</a></td>
-                    </tr>
-                    <tr>
-                        <td>Function:</td>
-                        <td id="function"></td>
-                    </tr>
-                    <tr>
-                        <td>Job ID:</td>
-                        <td colspan="2">
-                            <a id="jid" href="" class='hastooltip' data-toggle='tooltip' data-placement='bottom' title="Clicking this is possibly slow on very large datasets, as it is using Redis' KEYS operation."></a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Number of executed states:</td>
-                        <td id="number" colspan="2"></td>
-                    </tr>
-                    <tr>
-                        <td>It has been run:</td>
-                        <td id="time" colspan="2"></td>
-                    </tr>
-                    <tr>
-                        <td>Success:</td>
-                        <td id="success" colspan="2"></td>
-                    </tr>
-                    <tr>
-                        <td>Return Code:</td>
-                        <td id="return-code" colspan="2"></td>
-                    </tr>
-                </tbody>
-            </table>
-            <div class="rawdiv hidden">
-                  <strong>Raw Data:</strong><span id="raw-wrapper"></span>
-            </div>
-        </div>
+        {% include "default_layout.html" %}
     </div>
 </div>
 {% endblock %}
 {% block scripts %}
     <script type=text/javascript>
-        $('#search').submit(function(e){
-            e.preventDefault();
-            document.location.href='/functions/' + $(this).val();
-        });
         renderjson.set_icons('+', '-');
         renderjson.set_show_to_level(1);
         function generate_content(json, time){
             $('#minion').html(json.id);
             $('#function').html("<a href='/functions/" + json.fun + "'>" + json.fun + "</a>");
             $('#hist-btn').attr('href', '/history/' + json.id + '/' + json.fun);
-            $('#jid').html(json.jid);
+            $('#jid-cell').html(json.jid);
             $('#time').html(jQuery.timeago(time.replace(/, at /i, "T")));
             try{
                 $('#number').html(Object.keys(json.return).length);

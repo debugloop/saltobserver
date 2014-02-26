@@ -8,6 +8,7 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap-theme.min.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/salt-observer.css') }}">
+    {% block head %}{% endblock %}
 </head>
 <body>
     <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
@@ -40,7 +41,7 @@
                 </ul>
                 <form id="searchbox" class="navbar-form navbar-right navbar-input-group" role="search">
                     <div class="form-group">
-                        <input name="function" type="text" class="form-control" placeholder="Search...">
+                        <input name="q" type="text" class="form-control" placeholder="Search...">
                         <div class="btn-group">
                             <a type="submit" class="btn btn-default" onclick="$('#searchbox').submit()"><span class="glyphicon glyphicon-search"></span></a>
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">

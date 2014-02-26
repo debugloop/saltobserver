@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block navstats %}active{% endblock %}
+{% block title %}Salt Observer: Statistics {% endblock %}
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/morris-0.4.3.min.css') }}">
+{% endblock %}
+{% block content %}
+<div class="container-fluid" style="">
+    <div class="row">
+        <div id="highstate" class="col-xs-5 col-xs-offset-1 panel panel-default" style="height: 250px;margin-right:7px;">
+
+        </div>
+        <div id="statesls" class="col-xs-5 panel panel-default" style="height: 250px;margin-left:7px;">
+
+        </div>
+    </div>
+    <div class="row">
+        <div id="testping" class="col-xs-5 col-xs-offset-1 panel panel-default" style="height: 250px;margin-right:7px;">
+
+        </div>
+        <div id="pkgupgrade" class="col-xs-5 panel panel-default" style="height: 250px;margin-left:7px;">
+
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/raphael.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/morris-0.4.3.min.js') }}"></script>
+<script type=text/javascript>
+    $( document ).ready(function() {
+        $('.hastooltip').tooltip();
+        new Morris.Bar({
+            element: 'highstate',
+            data: [
+            {% for (minion, num) in highstates -%}
+                { minion: '{{ minion }}', num: {{ num }} }{% if not loop.last %},{% endif %}
+            {% endfor %}
+            ],
+            xkey: 'minion',
+            ykeys: ['num'],
+            hideHover: 'auto',
+            labels: ['Number of recorded state.highstate executions']
+        });
+        new Morris.Bar({
+            element: 'statesls',
+            data: [
+            {% for (minion, num) in slss -%}
+                { minion: '{{ minion }}', num: {{ num }} }{% if not loop.last %},{% endif %}
+            {% endfor %}
+            ],
+            xkey: 'minion',
+            ykeys: ['num'],
+            hideHover: 'auto',
+            labels: ['Number of recorded state.sls executions']
+        });
+        new Morris.Bar({
+            element: 'testping',
+            data: [
+            {% for (minion, num) in pings -%}
+                { minion: '{{ minion }}', num: {{ num }} }{% if not loop.last %},{% endif %}
+            {% endfor %}
+            ],
+            xkey: 'minion',
+            ykeys: ['num'],
+            hideHover: 'auto',
+            labels: ['Number of recorded test.ping executions']
+        });
+        new Morris.Bar({
+            element: 'pkgupgrade',
+            data: [
+            {% for (minion, num) in upgrades -%}
+                { minion: '{{ minion }}', num: {{ num }} }{% if not loop.last %},{% endif %}
+            {% endfor %}
+            ],
+            xkey: 'minion',
+            ykeys: ['num'],
+            hideHover: 'auto',
+            labels: ['Number of recorded pkg.upgrade runs']
+        });
+    });
+</script>
+{% endblock %}

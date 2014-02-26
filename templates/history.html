@@ -8,58 +8,18 @@
             <div id="matched-function" class="page-header">
                 <h3>{{ request.view_args.get('minion') }}: {{ request.view_args.get('function') }}</h3>
             </div>
-            <div class="list-group">
+            <div class="list-group" style="overflow: auto; height: 600px;">
                 {% for (jid, time) in jids %}
                 <a href="#" id="btn-{{ jid }}" class="list-group-item" onclick="$.ajax({ url:'/_get_function_data/{{ request.view_args.get('minion') }}/{{ jid }}', success:function(result) {generate_content(result, '{{ time }}'); }}); $(this).siblings('a').removeClass('active'); $(this).addClass('active');"><strong>{{ jid }}</strong> <small class="small pull-right">(<em>{{ time }}</em>)</small></a>
                 {% endfor %}
             </div>
         </div>
-        <div id="content" class="col-xs-8 well">
-            <table class='table table-bordered table-striped table-hover hidden'>
-                <tbody>
-                    <tr>
-                        <td>Minion ID:</td>
-                        <td id="minion"></td>
-                    </tr>
-                    <tr>
-                        <td>Function:</td>
-                        <td id="function"></td>
-                    </tr>
-                    <tr>
-                        <td>Job ID:</td>
-                        <td id="jid"></td>
-                    </tr>
-                    <tr>
-                        <td>Number of executed states:</td>
-                        <td id="number"></td>
-                    </tr>
-                    <tr>
-                        <td>It has been run:</td>
-                        <td id="time"></td>
-                    </tr>
-                    <tr>
-                        <td>Success:</td>
-                        <td id="success"></td>
-                    </tr>
-                    <tr>
-                        <td>Return Code:</td>
-                        <td id="return-code"></td>
-                    </tr>
-                </tbody>
-            </table>
-            <div class="rawdiv hidden">
-                  <strong>Raw Data:</strong><span id="raw-wrapper"></span>
-            </div>
-        </div>
+        {% include "default_layout.html" %}
     </div>
 </div>
 {% endblock %}
 {% block scripts %}
     <script type=text/javascript>
-        $('#search').submit(function(e){
-            e.preventDefault();
-            document.location.href='/functions/' + $(this).val();
-        });
         renderjson.set_icons('+', '-');
         renderjson.set_show_to_level(1);
         function generate_content(json, time){

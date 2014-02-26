@@ -1,9 +1,8 @@
 from flask import Flask, Response
-from flask import render_template, make_response, redirect, url_for, request, abort
+from flask import render_template, redirect, url_for, request, abort
 from flask_sockets import Sockets
 
 import time
-import fnmatch
 import gevent
 from redis import Redis
 
@@ -11,24 +10,49 @@ app = Flask(__name__)
 app.debug=True
 sockets = Sockets(app)
 
+redis = Redis()
+
+@sockets.route('/subscribe')
+def outgoing(ws):
+    stream.register(ws)
+    while ws is not None:
+        gevent.sleep()
+
 @app.route('/_get_function_data/<minion>/<jid>')
 def get_function_data(minion, jid):
     data = redis.get('{0}:{1}'.format(minion, jid))
     return Response(response=data, status=200, mimetype="application/json")
 
+@app.route('/stats')
+def stats():
+    highstates = list()
+    slss = list()
+    pings = list()
+    upgrades = list()
+    for minion in redis.sort('minions', alpha=True):
+        highstates.append((minion, len(redis.lrange('{0}:state.highstate'.format(minion), 0, -1))))
+        slss.append((minion, len(redis.lrange('{0}:state.sls'.format(minion), 0, -1))))
+        pings.append((minion, len(redis.lrange('{0}:test.ping'.format(minion), 0, -1))))
+        upgrades.append((minion, len(redis.lrange('{0}:pkg.upgrade'.format(minion), 0, -1))))
+    return render_template('stats.html', highstates=highstates, slss=slss, pings=pings, upgrades=upgrades)
+
 @app.route('/jobs/<jid>')
-def job(jid):
+def jobs(jid):
+    if request.args.get('q', None):
+        return redirect(url_for('jobs', jid=request.args.get('q')))
     ret = list()
     for minion in redis.keys('*:%s' % jid):
         ret.append(minion.split(':')[0])
-    timestamp = time.strptime(jid, "%Y%m%d%H%M%S%f")
+    try:
+        timestamp = time.strptime(jid, "%Y%m%d%H%M%S%f")
+    except Exception:
+        abort(404)
     return render_template('jobs.html', minions=ret, time=time.strftime('%Y-%m-%d, at %H:%M:%S', timestamp))
 
 @app.route('/jobs')
 def jobsearch():
-    # get param or
     if request.args.get('job', None):
-        return redirect(url_for('jobsearch', function=request.args.get('job')))
+        return redirect(url_for('jobs', jid=request.args.get('job')))
     return render_template('jobform.html')
 
 @app.route('/history/<minion>/<function>')
@@ -50,6 +74,8 @@ def historysearch():
 
 @app.route('/functions/<function>')
 def function(function):
+    if request.args.get('q', None):
+        return redirect(url_for('functions', function=request.args.get('q')))
     ret = list()
     for minion in redis.sort('minions', alpha=True):
         try:

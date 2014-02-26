@@ -1,0 +1,40 @@
+<div id="content" class="col-xs-8 well">
+    <table class='table table-bordered hidden'>
+        <tbody>
+            <tr>
+                <td>Minion ID:</td>
+                <td id="minion"></td>
+                <td id="hist-btn-td" rowspan="2"><a id="hist-btn" class="btn btn-primary btn-block btn-lg" href="">Execution History</a></td>
+            </tr>
+            <tr>
+                <td>Function:</td>
+                <td id="function"></td>
+            </tr>
+            <tr>
+                <td>Job ID:</td>
+                <td id="jid-cell" colspan="2">
+                    <a id="jid" href="" class='hastooltip' data-toggle='tooltip' data-placement='bottom' title="Clicking this is possibly slow on very large datasets, as it is using Redis' KEYS operation."></a>
+                </td>
+            </tr>
+            <tr>
+                <td>Number of executed states:</td>
+                <td id="number" colspan="2"></td>
+            </tr>
+            <tr>
+                <td>It has been run:</td>
+                <td id="time" colspan="2"></td>
+            </tr>
+            <tr>
+                <td>Success:</td>
+                <td id="success" colspan="2"></td>
+            </tr>
+            <tr>
+                <td>Return Code:</td>
+                <td id="return-code" colspan="2"></td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="rawdiv hidden">
+          <strong>Raw Data:</strong><span id="raw-wrapper"></span>
+    </div>
+</div>

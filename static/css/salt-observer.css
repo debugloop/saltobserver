@@ -14,9 +14,6 @@ body {
 #matched-function {
     margin-top: -15px;
 }
-#list: {
-    overflow: auto;
-}
 #list:first-child {
     padding-top: 20px;
 }
