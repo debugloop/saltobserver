@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block navfunctions %}active{% endblock %}
+{% block title %}Salt Observer: {{ request.view_args.get('function') }} {% endblock %}
+{% block content %}
+<div class="container-fluid" style="height:100%;">
+    <div id="mainrow" class="row">
+        <div id="list" class="col-xs-4">
+            <div id="matched-function" class="page-header">
+                <h3>{{ request.view_args.get('function') }}</h3>
+            </div>
+            <div class="list-group">
+                {% for (minion, jid, time) in functions %}
+                <a href="#" id="btn-{{ minion }}" class="list-group-item" onclick="$.ajax({ url:'/_get_function_data/{{ minion}}/{{ jid }}', success:function(result) {generate_content(result, '{{ time }}'); }}); $(this).siblings('a').removeClass('active'); $(this).addClass('active');"><strong>{{ minion }}</strong> <small class="small pull-right">(<em>{{ time }}</em>)</small></a>
+                {% endfor %}
+            </div>
+        </div>
+        <div id="content" class="col-xs-8 well">
+            <table class='table table-bordered table-hover hidden'>
+                <tbody>
+                    <tr>
+                        <td>Minion ID:</td>
+                        <td id="minion"></td>
+                        <td id="hist-btn-td" rowspan="2"><a id="hist-btn" class="btn btn-primary btn-block btn-lg" href="">Execution History</a></td>
+                    </tr>
+                    <tr>
+                        <td>Function:</td>
+                        <td id="function"></td>
+                    </tr>
+                    <tr>
+                        <td>Job ID:</td>
+                        <td colspan="2">
+                            <a id="jid" href="" class='hastooltip' data-toggle='tooltip' data-placement='bottom' title="Clicking this is possibly slow on very large datasets, as it is using Redis' KEYS operation."></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Number of executed states:</td>
+                        <td id="number" colspan="2"></td>
+                    </tr>
+                    <tr>
+                        <td>It has been run:</td>
+                        <td id="time" colspan="2"></td>
+                    </tr>
+                    <tr>
+                        <td>Success:</td>
+                        <td id="success" colspan="2"></td>
+                    </tr>
+                    <tr>
+                        <td>Return Code:</td>
+                        <td id="return-code" colspan="2"></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="rawdiv hidden">
+                  <strong>Raw Data:</strong><span id="raw-wrapper"></span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+    <script type=text/javascript>
+        $('#search').submit(function(e){
+            e.preventDefault();
+            document.location.href='/functions/' + $(this).val();
+        });
+        renderjson.set_icons('+', '-');
+        renderjson.set_show_to_level(1);
+        function generate_content(json, time){
+            $('#minion').html(json.id);
+            $('#function').html(json.fun);
+            $('#hist-btn').attr('href', '/history/' + json.id + '/' + json.fun);
+            $('#jid').html(json.jid);
+            $('#jid').attr('href', '/jobs/' + json.jid);
+            $('#time').html(jQuery.timeago(time.replace(/, at /i, "T")));
+            try{
+                $('#number').html(Object.keys(json.return).length);
+            }catch(e){
+                $('#number').html('1');
+            }
+            if (json.success) {
+                $('#success').removeClass('danger');
+                $('#success').addClass('success');
+                $('#success').html("<span class='glyphicon glyphicon-ok'></span>");
+            } else {
+                $('#success').removeClass('success');
+                $('#success').addClass('danger');
+                $('#success').html("<span class='glyphicon glyphicon-remove'></span>");
+            }
+            $('#return-code').html(json.retcode);
+
+
+            $('#content > table').removeClass('hidden');
+            $('#content > div').removeClass('hidden');
+
+            $('#raw-wrapper').html(renderjson(json));
+            $('.hastooltip').tooltip();
+        }
+        // var incoming;
+
+        // function html_encode(value){
+        //       return $('<div/>').text(value).html();
+        // }
+
+        // $(document).ready(function() {
+        //     initializeWebSockets();
+        // })
+
+        // function initializeWebSockets() {
+        //     incoming = new ReconnectingWebSocket("ws://"+ location.host + "/subscribe");
+        //     incoming.onmessage = function(message) {
+        //         var data = JSON.parse(message.data);
+        //         switch(data.id)
+        //         {
+        //             case "status":
+        //                 break;
+        //             case "job":
+        //                 break;
+        //             case "webcam":
+        //                 break;
+        //         }
+        //     };
+        // }
+    </script>
+{% endblock %}

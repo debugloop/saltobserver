@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block navhistory %}active{% endblock %}
+{% block title %}Salt Observer: Search History{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="row col-xs-6 col-xs-offset-3">
+            <div class="landing-element well well-lg">
+                <form role="form-horizontal">
+                    <div class="form-group">
+                        <input type="text" name="minion" class="form-control" placeholder="Minion ID">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="function" class="form-control" placeholder="Function">
+                    </div>
+                    <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
