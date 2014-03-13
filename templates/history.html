@@ -8,7 +8,7 @@
             <div id="matched-function" class="page-header">
                 <h3>{{ request.view_args.get('minion') }}: {{ request.view_args.get('function') }}</h3>
             </div>
-            <div class="list-group" style="overflow: auto; height: 600px;">
+            <div id="list-content" class="list-group" style="overflow: auto; height: 600px;">
                 {% for (jid, time) in jids %}
                 <a href="#" id="btn-{{ jid }}" class="list-group-item" onclick="$.ajax({ url:'/_get_function_data/{{ request.view_args.get('minion') }}/{{ jid }}', success:function(result) {generate_content(result, '{{ time }}'); }}); $(this).siblings('a').removeClass('active'); $(this).addClass('active');"><strong>{{ jid }}</strong> <small class="small pull-right">(<em>{{ time }}</em>)</small></a>
                 {% endfor %}

@@ -8,7 +8,7 @@
             <div id="matched-function" class="page-header">
                 <h3>Minions executing this job</h3>
             </div>
-            <div class="list-group" style="overflow: auto; height: 600px;">
+            <div id="list-content" class="list-group" style="overflow: auto; height: 600px;">
                 {% for minion in minions %}
                 <a href="#" id="btn-{{ minion }}" class="list-group-item" onclick="$.ajax({ url:'/_get_function_data/{{ minion}}/{{ request.view_args.get('jid') }}', success:function(result) {generate_content(result, '{{ time }}'); }}); $(this).siblings('a').removeClass('active'); $(this).addClass('active');"><strong>{{ minion }}</strong></a>
                 {% endfor %}

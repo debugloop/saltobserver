@@ -1,22 +1,30 @@
 from flask import Flask, Response
 from flask import render_template, redirect, url_for, request, abort
-from flask_sockets import Sockets
+
+import gevent
+from gevent import monkey; monkey.patch_all()
+
+from socketio import socketio_manage
+from socketio.server import SocketIOServer
+from socketio.namespace import BaseNamespace
+from socketio.mixins import BroadcastMixin
 
 import time
-import gevent
 from redis import Redis
 
 app = Flask(__name__)
-app.debug=True
-sockets = Sockets(app)
-
 redis = Redis()
 
-@sockets.route('/subscribe')
-def outgoing(ws):
-    stream.register(ws)
-    while ws is not None:
-        gevent.sleep()
+class RedisStream(BaseNamespace, BroadcastMixin):
+    def redis_emitter(self, channel):
+        pubsub = Redis().pubsub()
+        pubsub.subscribe(channel)
+        for message in pubsub.listen():
+            if message['type'] == 'message':
+                self.broadcast_event(channel, message['data'])
+
+    def on_subscribe(self, channel):
+        self.spawn(self.redis_emitter, channel=channel)
 
 @app.route('/_get_function_data/<minion>/<jid>')
 def get_function_data(minion, jid):
@@ -45,9 +53,9 @@ def jobs(jid):
         ret.append(minion.split(':')[0])
     try:
         timestamp = time.strptime(jid, "%Y%m%d%H%M%S%f")
+        return render_template('jobs.html', minions=ret, time=time.strftime('%Y-%m-%d, at %H:%M:%S', timestamp))
     except Exception:
         abort(404)
-    return render_template('jobs.html', minions=ret, time=time.strftime('%Y-%m-%d, at %H:%M:%S', timestamp))
 
 @app.route('/jobs')
 def jobsearch():
@@ -97,3 +105,13 @@ def functionsearch():
 def functions():
     # get param or default, but always redirect to function view
     return redirect(url_for('function', function=request.args.get('function', 'state.highstate')))
+
+@app.route('/socket.io/<path:remaining>')
+def socketio(remaining):
+    socketio_manage(request.environ, {'/subscription': RedisStream}, request)
+    return Response()
+
+if __name__ == '__main__':
+    print 'Listening on http://0.0.0.0:8000'
+    app.debug = True
+    SocketIOServer(('0.0.0.0', 8000), app, resource="socket.io", policy_server=False).serve_forever()
