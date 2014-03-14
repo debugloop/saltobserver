@@ -10,7 +10,7 @@
             </div>
             <div id="list-content" class="list-group" style="overflow: auto; height: 600px;">
                 {% for (jid, time) in jids %}
-                <a href="#" id="btn-{{ jid }}" class="list-group-item" onclick="$.ajax({ url:'/_get_function_data/{{ request.view_args.get('minion') }}/{{ jid }}', success:function(result) {generate_content(result, '{{ time }}'); }}); $(this).siblings('a').removeClass('active'); $(this).addClass('active');"><strong>{{ jid }}</strong> <small class="small pull-right">(<em>{{ time }}</em>)</small></a>
+                <a href="#" id="btn-{{ jid }}" class="list-group-item"><strong>{{ jid }}</strong><small class="small pull-right">(<em>{{ time }}</em>)</small></a>
                 {% endfor %}
             </div>
         </div>
@@ -19,7 +19,16 @@
 </div>
 {% endblock %}
 {% block scripts %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/socket.io.min.js') }}"></script>
     <script type=text/javascript>
+        {% for (jid, time) in jids %}
+        $("#btn-{{ jid }}").click(function() {
+            $.ajax({ url:'/_get_function_data/{{ request.view_args.get('minion') }}/{{ jid }}', success:function(result) {generate_content(result, '{{ time }}'); }});
+            $(this).siblings('a').removeClass('active');
+            $(this).addClass('active');
+        });
+        {% endfor %}
+
         renderjson.set_icons('+', '-');
         renderjson.set_show_to_level(1);
         function generate_content(json, time){
@@ -51,30 +60,16 @@
             $('#raw-wrapper').html(renderjson(json));
             $('.hastooltip').tooltip();
         }
-        // var incoming;
 
-        // function html_encode(value){
-        //       return $('<div/>').text(value).html();
-        // }
-
-        // $(document).ready(function() {
-        //     initializeWebSockets();
-        // })
-
-        // function initializeWebSockets() {
-        //     incoming = new ReconnectingWebSocket("ws://"+ location.host + "/subscribe");
-        //     incoming.onmessage = function(message) {
-        //         var data = JSON.parse(message.data);
-        //         switch(data.id)
-        //         {
-        //             case "status":
-        //                 break;
-        //             case "job":
-        //                 break;
-        //             case "webcam":
-        //                 break;
-        //         }
-        //     };
-        // }
+        var socket = io.connect('/subscription');
+        socket.emit('subscribe_history', "{{ request.view_args.get('minion') }}:{{ request.view_args.get('function') }}")
+        socket.on("subscribe_history", function(msg) {
+            $("<a href='#' id='btn-" + msg.jid + "' class='list-group-item'><strong>" + msg.jid + "</strong><small class='small pull-right'>(<em>" + msg.time + "</em>)</small></a>").prependTo('#list-content').hide().fadeIn("slow");
+            $('#btn-' + msg.jid).click(function() {
+                $.ajax({ url:'/_get_function_data/' + msg.minion_id + '/' + msg.jid, success:function(result) {generate_content(result, msg.time);}});
+                $(this).siblings('a').removeClass('active');
+                $(this).addClass('active');
+            });
+        });
     </script>
 {% endblock %}

@@ -17,6 +17,9 @@ body {
 #list:first-child {
     padding-top: 20px;
 }
+.badge-update {
+    background-color:#d9534f;
+}
 #content {
     height: 100%;
     padding: 1px 0px;

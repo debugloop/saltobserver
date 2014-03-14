@@ -14,17 +14,26 @@ from redis import Redis
 
 app = Flask(__name__)
 redis = Redis()
+redis.config_set('notify-keyspace-events', 'Kls')
 
 class RedisStream(BaseNamespace, BroadcastMixin):
-    def redis_emitter(self, channel):
+    def redis_emitter(self, channel, subscription):
         pubsub = Redis().pubsub()
-        pubsub.subscribe(channel)
+        pubsub.subscribe(subscription)
         for message in pubsub.listen():
             if message['type'] == 'message':
-                self.broadcast_event(channel, message['data'])
+                minion_id = message['channel'].split(':')[1]
+                function = message['channel'].split(':')[2]
+                jid = redis.lindex('{0}:{1}'.format(minion_id, function), 0)
+                timestamp = time.strptime(jid, "%Y%m%d%H%M%S%f")
+                self.emit(channel, dict(minion_id=minion_id, jid=jid, time=time.strftime('%Y-%m-%d, at %H:%M:%S', timestamp)))
 
-    def on_subscribe(self, channel):
-        self.spawn(self.redis_emitter, channel=channel)
+    def on_subscribe_function(self, function):
+        redis_channels = ["__keyspace@0__:{0}:{1}".format(minion, function) for minion in redis.smembers('minions')]
+        self.spawn(self.redis_emitter, channel='subscribe_function', subscription=redis_channels)
+
+    def on_subscribe_history(self, history):
+        self.spawn(self.redis_emitter, channel='subscribe_history', subscription="__keyspace@0__:{0}".format(history))
 
 @app.route('/_get_function_data/<minion>/<jid>')
 def get_function_data(minion, jid):
@@ -53,9 +62,10 @@ def jobs(jid):
         ret.append(minion.split(':')[0])
     try:
         timestamp = time.strptime(jid, "%Y%m%d%H%M%S%f")
-        return render_template('jobs.html', minions=ret, time=time.strftime('%Y-%m-%d, at %H:%M:%S', timestamp))
+        at_time = time.strftime('%Y-%m-%d, at %H:%M:%S', timestamp)
     except Exception:
-        abort(404)
+        at_time = None
+    return render_template('jobs.html', minions=ret, time=at_time)
 
 @app.route('/jobs')
 def jobsearch():

@@ -10,7 +10,7 @@
             </div>
             <div id="list-content" class="list-group" style="overflow: auto; height: 600px;">
                 {% for (minion, jid, time) in functions %}
-                <a href="#" id="btn-{{ minion }}" class="list-group-item" onclick="$.ajax({ url:'/_get_function_data/{{ minion}}/{{ jid }}', success:function(result) {generate_content(result, '{{ time }}'); }}); $(this).siblings('a').removeClass('active'); $(this).addClass('active');"><strong>{{ minion }}</strong> <small class="small pull-right">(<em>{{ time }}</em>)</small></a>
+                <a href="#" id="btn-{{ minion }}" class="list-group-item"><strong>{{ minion }}</strong><span id='update-{{ minion }}'><small class="small pull-right">(<em>{{ time }}</em>)</small></span></a>
                 {% endfor %}
             </div>
         </div>
@@ -19,9 +19,16 @@
 </div>
 {% endblock %}
 {% block scripts %}
-    {# <script type="text/javascript" src="/socket.io/socket.io.js"></script> #}
-    <script type="text/javascript" src="http:////cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/socket.io.min.js') }}"></script>
     <script type=text/javascript>
+        {% for (minion, jid, time) in functions %}
+        $("#btn-{{ minion|replace(".", "\\\\.") }}").click(function() {
+            $.ajax({ url:'/_get_function_data/{{ minion}}/{{ jid }}', success:function(result) {generate_content(result, '{{ time }}'); }});
+            $(this).siblings('a').removeClass('active');
+            $(this).addClass('active');
+        });
+        {% endfor %}
+
         renderjson.set_icons('+', '-');
         renderjson.set_show_to_level(1);
         function generate_content(json, time){
@@ -54,15 +61,26 @@
             $('.hastooltip').tooltip();
         }
 
-        socket = io.connect('/subscription', {'reconnect': false});
-        socket.emit('subscribe', 'test');
-        socket.emit('subscribe', 'test2');
-        socket.on('test', function(msg) {
-            $('#list-content').append($("<p class='list-group-item'>").text(msg));
+        var socket = io.connect('/subscription');
+        socket.emit('subscribe_function', "{{ request.view_args.get('function') }}")
+        socket.on("subscribe_function", function(msg) {
+            escaped_minion_id = msg.minion_id.replace(/\./g, "\\.");
+            $('#update-' + escaped_minion_id).addClass("badge badge-update");
+            if ($.isNumeric($('#update-' + escaped_minion_id).text())) {
+                $('#update-' + escaped_minion_id).text($('#update-' + escaped_minion_id).text() - -1);
+            } else {
+                $('#update-' + escaped_minion_id).text("1");
+            }
+            $('#btn-' + escaped_minion_id).off('click');
+            $('#btn-' + escaped_minion_id).click(function() {
+                $.ajax({ url:"/_get_function_data/" + msg.minion_id + "/" + msg.jid , success:function(result) {generate_content(result, msg.time); }});
+                $(this).siblings('a').removeClass('active');
+                $(this).addClass('active');
+                $(this).children('span').html("<small class='small pull-right'>(<em>'" + msg.time + "</em>)</small>");
+                $(this).children('span').removeClass('badge badge-update');
+            });
         });
-        socket.on('test2', function(msg) {
-            $('#list-content').append($("<p class='list-group-item'>").append($("<em>").text(msg)));
-        });
+
         $(window).bind("unload", function() {
             socket.socket.disconnect();
         });

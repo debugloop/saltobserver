@@ -10,7 +10,7 @@
             </div>
             <div id="list-content" class="list-group" style="overflow: auto; height: 600px;">
                 {% for minion in minions %}
-                <a href="#" id="btn-{{ minion }}" class="list-group-item" onclick="$.ajax({ url:'/_get_function_data/{{ minion}}/{{ request.view_args.get('jid') }}', success:function(result) {generate_content(result, '{{ time }}'); }}); $(this).siblings('a').removeClass('active'); $(this).addClass('active');"><strong>{{ minion }}</strong></a>
+                <a href="#" id="btn-{{ minion }}" class="list-group-item"><strong>{{ minion }}</strong></a>
                 {% endfor %}
             </div>
         </div>
@@ -20,6 +20,14 @@
 {% endblock %}
 {% block scripts %}
     <script type=text/javascript>
+        {% for minion in minions %}
+        $("#btn-{{ minion|replace(".", "\\\\.") }}").click(function() {
+            $.ajax({ url:'/_get_function_data/{{ minion}}/{{ request.view_args.get('jid') }}', success:function(result) {generate_content(result, '{{ time }}'); }});
+            $(this).siblings('a').removeClass('active');
+            $(this).addClass('active');
+        });
+        {% endfor %}
+
         renderjson.set_icons('+', '-');
         renderjson.set_show_to_level(1);
         function generate_content(json, time){
@@ -50,30 +58,5 @@
 
             $('#raw-wrapper').html(renderjson(json));
         }
-        // var incoming;
-
-        // function html_encode(value){
-        //       return $('<div/>').text(value).html();
-        // }
-
-        // $(document).ready(function() {
-        //     initializeWebSockets();
-        // })
-
-        // function initializeWebSockets() {
-        //     incoming = new ReconnectingWebSocket("ws://"+ location.host + "/subscribe");
-        //     incoming.onmessage = function(message) {
-        //         var data = JSON.parse(message.data);
-        //         switch(data.id)
-        //         {
-        //             case "status":
-        //                 break;
-        //             case "job":
-        //                 break;
-        //             case "webcam":
-        //                 break;
-        //         }
-        //     };
-        // }
     </script>
 {% endblock %}
