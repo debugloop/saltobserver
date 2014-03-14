@@ -12,7 +12,7 @@ from socketio.mixins import BroadcastMixin
 import time
 from redis import Redis
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='dependencies')
 redis = Redis()
 redis.config_set('notify-keyspace-events', 'Kls')
 
