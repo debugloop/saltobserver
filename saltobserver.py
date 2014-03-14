@@ -13,7 +13,18 @@ import time
 from redis import Redis
 
 app = Flask(__name__, static_folder='dependencies')
-redis = Redis()
+app.config['DEBUG'] = True
+
+app.config['REDIS_HOST'] = 'localhost'
+app.config['REDIS_PORT'] = 6379
+app.config['REDIS_DB'] = 0
+app.config['REDIS_PASS'] = None
+
+redis = Redis(
+        host=app.config['REDIS_HOST'],
+        port=app.config['REDIS_PORT'],
+        db=app.config['REDIS_DB'],
+        password=app.config['REDIS_PASS'])
 redis.config_set('notify-keyspace-events', 'Kls')
 
 class RedisStream(BaseNamespace, BroadcastMixin):
@@ -123,5 +134,4 @@ def socketio(remaining):
 
 if __name__ == '__main__':
     print 'Listening on http://0.0.0.0:8000'
-    app.debug = True
     SocketIOServer(('0.0.0.0', 8000), app, resource="socket.io", policy_server=False).serve_forever()
