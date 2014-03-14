@@ -27,5 +27,5 @@ v2.8.0, which you have to compile manually in every major distribution but Arch
 .. _`Redis Keyspace Notifications`: http://redis.io/topics/notifications
 .. _`this Salt state`: https://github.com/danieljn/salt-states/tree/master/salt/redis
 
-Any static dependencies are included under the static folder. They all use a
-MIT license.
+Any static dependencies are included in the ``dependencies`` folder, which also
+serves as Flask's static file folder. They all use a MIT license.
