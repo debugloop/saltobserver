@@ -29,7 +29,8 @@
         {% endfor %}
 
         renderjson.set_icons('+', '-');
-        renderjson.set_show_to_level(1);
+        renderjson.set_show_to_level(2);
+        renderjson.set_sort_objects(true);
         function generate_content(json, time){
             $('#minion').html(json.id);
             $('#function').html("<a href='/functions/" + json.fun + "'>" + json.fun + "</a>");
