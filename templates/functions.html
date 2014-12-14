@@ -1,42 +1,71 @@
 {% extends "base.html" %}
-{% block navfunctions %}active{% endblock %}
 {% block title %}Salt Observer: {{ request.view_args.get('function') }} {% endblock %}
+{% set active_page = request.view_args.get('function') %}
 {% block content %}
-<div class="container-fluid" style="height:100%;">
-    <div id="mainrow" class="row">
-        <div id="list" class="col-xs-4">
-            <div id="matched-function" class="page-header">
-                <h3>{{ request.view_args.get('function') }}</h3>
-            </div>
-            <div id="list-content" class="list-group" style="overflow: auto; height: 600px;">
-                {% for (minion, jid, time) in functions %}
-                <a href="#" id="btn-{{ minion }}" class="list-group-item"><strong>{{ minion }}</strong><span id='update-{{ minion }}'><small class="small pull-right">(<em>{{ time }}</em>)</small></span></a>
-                {% endfor %}
+    <div id="list" class="pure-u-1">
+       {% for (minion, jid, time) in functions %}
+        <div id="minion-item-{{ minion }}" class="minion-item pure-g">
+            <div class="pure-u-3-4">
+                <h4 class="minion-name">{{ minion }}</h4>
+                <p class="jid-time">{{ time }}</p>
             </div>
         </div>
+        {% endfor %}
+    </div>
+    <div id="main" class="pure-u-1">
+        <div id="default-content" class="centered-content">
+            <div class="pure-g">
+                <div class="pure-u-1">
+                    <div class="count-box">
+                        <h1>{{ functions|length }}</h1>
+                        <div class="count-title">
+                            Minion{{ functions|length|pluralize }} ha{{ functions|length|pluralize("s", "ve") }} run this function...
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pure-g">
+                <div class="pure-u-1">
+                    <div class="count-box">
+                        <h1>{{ average_run|round(1) }}</h1>
+                        <div class="count-title">
+                            ...time{{ average_run|pluralize }}{{ functions|length|pluralize("", " on average") }}.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="real-content" class="hidden">
         {% include "default_layout.html" %}
+        </div>
     </div>
 </div>
 {% endblock %}
+
 {% block scripts %}
     <script type="text/javascript" src="{{ url_for('static', filename='js/socket.io.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/renderjson.js') }}"></script>
+
     <script type=text/javascript>
         {% for (minion, jid, time) in functions %}
-        $("#btn-{{ minion|replace(".", "\\\\.") }}").click(function() {
+        $("#minion-item-{{ minion|replace(".", "\\\\.") }}").click(function() {
             $.ajax({ url:'/_get_function_data/{{ minion}}/{{ jid }}', success:function(result) {generate_content(result, '{{ time }}'); }});
-            $(this).siblings('a').removeClass('active');
-            $(this).addClass('active');
+            $(this).siblings('div').removeClass('minion-item-selected');
+            $(this).addClass('minion-item-selected');
         });
         {% endfor %}
 
         renderjson.set_icons('+', '-');
         renderjson.set_show_to_level(1);
         function generate_content(json, time){
+            $('#default-content').hide();
+            $('#real-content').removeClass('hidden');
+
             $('#minion').html(json.id);
             $('#function').html(json.fun);
             $('#hist-btn').attr('href', '/history/' + json.id + '/' + json.fun);
             $('#jid').html(json.jid);
-            $('#jid').attr('href', '/jobs/' + json.jid);
+            $('#jid-btn').attr('href', '/jobs/' + json.jid);
             $('#time').html(jQuery.timeago(time.replace(/, at /i, "T")));
             try{
                 $('#number').html(Object.keys(json.return).length);
@@ -44,18 +73,12 @@
                 $('#number').html('1');
             }
             if (json.success) {
-                $('#success').removeClass('danger');
-                $('#success').addClass('success');
-                $('#success').html("<span class='glyphicon glyphicon-ok'></span>");
+                $('#success').html("&#x2713;");
+                $('#return-code').parent().hide();
             } else {
-                $('#success').removeClass('success');
-                $('#success').addClass('danger');
-                $('#success').html("<span class='glyphicon glyphicon-remove'></span>");
+                $('#success').html("&#x2717;");
+                $('#return-code').html(json.retcode);
             }
-            $('#return-code').html(json.retcode);
-
-            $('#content > table').removeClass('hidden');
-            $('#content > div').removeClass('hidden');
 
             $('#raw-wrapper').html(renderjson(json));
             $('.hastooltip').tooltip();

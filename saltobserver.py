@@ -46,6 +46,13 @@ class RedisStream(BaseNamespace, BroadcastMixin):
     def on_subscribe_history(self, history):
         self.spawn(self.redis_emitter, channel='subscribe_history', subscription="__keyspace@0__:{0}".format(history))
 
+@app.template_filter('pluralize')
+def pluralize(number, singular='', plural='s'):
+    if number == 1:
+        return singular
+    else:
+        return plural
+
 @app.route('/_get_function_data/<minion>/<jid>')
 def get_function_data(minion, jid):
     data = redis.get('{0}:{1}'.format(minion, jid))
@@ -105,15 +112,19 @@ def historysearch():
 def function(function):
     if request.args.get('q', None):
         return redirect(url_for('functions', function=request.args.get('q')))
-    ret = list()
+    functions = list()
+    times_list = list()
     for minion in redis.sort('minions', alpha=True):
         try:
             jid = redis.lindex('{0}:{1}'.format(minion, function), 0)
+            times_run = redis.llen('{0}:{1}'.format(minion, function))
+            if times_run > 0:
+                times_list.append(times_run)
             timestamp = time.strptime(jid, "%Y%m%d%H%M%S%f")
-            ret.append((minion, jid, time.strftime('%Y-%m-%d, at %H:%M:%S', timestamp)))
+            functions.append((minion, jid, time.strftime('%Y-%m-%d, at %H:%M:%S', timestamp)))
         except Exception:
             continue
-    return render_template('functions.html', functions=ret)
+    return render_template('functions.html', functions=functions, average_run=float(sum(times_list))/len(times_list) if len(times_list) > 0 else 0)
 
 @app.route('/functions')
 def functionsearch():

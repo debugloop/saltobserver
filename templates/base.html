@@ -1,75 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <title>{% block title %}Salt Observer{% endblock %}</title>
-    <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
 
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap-theme.min.css') }}">
-    {% include "style.css" %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/pure-min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/email.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/saltobserver.css') }}">
+
     {% block head %}{% endblock %}
 </head>
 <body>
-    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="/functions/state.highstate">Salt Observer</a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar-collapse">
-                <ul class="nav navbar-nav navbar-left">
-                    <li class="dropdown {% block navfunctions %}{% endblock %}">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Functions <b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="/functions">Search Functions</a></li>
-                            <li class="divider"></li>
-                            <li><a href="/functions/state.highstate">state.highstate</a></li>
-                            <li><a href="/functions/state.sls">state.sls</a></li>
-                            <li><a href="/functions/pkg.upgrade">pkg.upgrade</a></li>
-                            <li><a href="/functions/test.ping">test.ping</a></li>
-                        </ul>
-                    </li>
-                    <li class="{% block navjobs %}{% endblock %}"><a href="/jobs">Jobs</a></li>
-                    <li class="{% block navhistory %}{% endblock %}"><a href="/history">History</a></li>
-                    <li class="{% block navstats %}{% endblock %}"><a href="/stats">Stats</a></li>
+<div id="layout" class="content pure-g">
+    <div id="nav" class="pure-u">
+        <a href="#" class="nav-menu-button">Menu</a>
+        <div class="nav-inner">
+            <div class="pure-menu pure-menu-open">
+                <ul>
+                    <li class="pure-menu-heading">Functions</li>
+                    {% set quickfuncs_bar = [ 'state.highstate', 'state.sls', 'pkg.upgrade', 'test.ping' ] -%}
+                    {% for id in quickfuncs_bar %}
+                    <li><a {% if id == active_page %}class="pure-button-active"{% endif %} href="/functions/{{ id|e }}">{{ id|e }}</a></li>
+                    {% endfor %}
+                    <li class="pure-menu-heading">Search</li>
+                    {% set search_bar = [ ('sfunctions', 'Functions', '/functions'), ('sjobs', 'Jobs', '/jobs'), ('shistory', 'History', '/history') ] -%}
+                    {% for id, caption, href in search_bar %}
+                    <li><a {% if id == active_page %}class="pure-button-active"{% endif %} href="{{ href }}">{{ caption }}</a></li>
+                    {% endfor %}
                 </ul>
-                <form id="searchbox" class="navbar-form navbar-right navbar-input-group" role="search">
-                    <div class="form-group">
-                        <input name="q" type="text" class="form-control" placeholder="Search...">
-                        <div class="btn-group">
-                            <a type="submit" class="btn btn-default" onclick="$('#searchbox').submit()"><span class="glyphicon glyphicon-search"></span></a>
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                <span class="caret"></span>
-                                <span class="sr-only">Toggle Dropdown</span>
-                            </button>
-                            <ul class="dropdown-menu" role="menu">
-                                <li><a href="#" onclick="window.location.href='/functions/' + $('#searchbox > div > input').val();">Search function</a></li>
-                                <li><a href="#" onclick="window.location.href='/jobs/' + $('#searchbox > div > input').val();">Search jobs</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </form>
             </div>
         </div>
-    </nav>
-    {% block content %}
-    {% endblock %}
-    <script type=text/javascript>
-        $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
-    </script>
-    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.timeago.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='js/renderjson.js') }}"></script>
-    <script type=text/javascript>
-    </script>
-    {% block scripts %}
-    {% endblock %}
+    </div>
+    {% block content %}{% endblock %}
+<script src="http://yui.yahooapis.com/3.17.2/build/yui/yui-min.js"></script>
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.4.1/jquery.timeago.min.js"></script>
+
+<script>
+    YUI().use('node-base', 'node-event-delegate', function (Y) {
+
+        var menuButton = Y.one('.nav-menu-button'),
+            nav        = Y.one('#nav');
+
+        // Setting the active class name expands the menu vertically on small screens.
+        menuButton.on('click', function (e) {
+            nav.toggleClass('active');
+        });
+    });
+</script>
+{% block scripts %}
+{% endblock %}
 </body>
 </html>
+{#     <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation"> #}
+{#         <div class="container-fluid"> #}
+{#             <div class="navbar-header"> #}
+{#                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse"> #}
+{#                     <span class="sr-only">Toggle navigation</span> #}
+{#                     <span class="icon-bar"></span> #}
+{#                     <span class="icon-bar"></span> #}
+{#                     <span class="icon-bar"></span> #}
+{#                 </button> #}
+{#                 <a class="navbar-brand" href="/functions/state.highstate">Salt Observer</a> #}
+{#             </div> #}
+{#             <div class="collapse navbar-collapse" id="navbar-collapse"> #}
+{#                 <ul class="nav navbar-nav navbar-left"> #}
+{#                     <li class="dropdown {% block navfunctions %}{% endblock %}"> #}
+{#                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Functions <b class="caret"></b></a> #}
+{#                         <ul class="dropdown-menu"> #}
+{#                             <li><a href="/functions">Search Functions</a></li> #}
+{#                             <li class="divider"></li> #}
+{#                             <li><a href="/functions/state.highstate">state.highstate</a></li> #}
+{#                             <li><a href="/functions/state.sls">state.sls</a></li> #}
+{#                             <li><a href="/functions/pkg.upgrade">pkg.upgrade</a></li> #}
+{#                             <li><a href="/functions/test.ping">test.ping</a></li> #}
+{#                         </ul> #}
+{#                     </li> #}
+{#                     <li class="{% block navjobs %}{% endblock %}"><a href="/jobs">Jobs</a></li> #}
+{#                     <li class="{% block navhistory %}{% endblock %}"><a href="/history">History</a></li> #}
+{#                     <li class="{% block navstats %}{% endblock %}"><a href="/stats">Stats</a></li> #}
+{#                 </ul> #}
+{#                 <form id="searchbox" class="navbar-form navbar-right navbar-input-group" role="search"> #}
+{#                     <div class="form-group"> #}
+{#                         <input name="q" type="text" class="form-control" placeholder="Search..."> #}
+{#                         <div class="btn-group"> #}
+{#                             <a type="submit" class="btn btn-default" onclick="$('#searchbox').submit()"><span class="glyphicon glyphicon-search"></span></a> #}
+{#                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"> #}
+{#                                 <span class="caret"></span> #}
+{#                                 <span class="sr-only">Toggle Dropdown</span> #}
+{#                             </button> #}
+{#                             <ul class="dropdown-menu" role="menu"> #}
+{#                                 <li><a href="#" onclick="window.location.href='/functions/' + $('#searchbox > div > input').val();">Search function</a></li> #}
+{#                                 <li><a href="#" onclick="window.location.href='/jobs/' + $('#searchbox > div > input').val();">Search jobs</a></li> #}
+{#                             </ul> #}
+{#                         </div> #}
+{#                     </div> #}
+{#                 </form> #}
+{#             </div> #}
+{#         </div> #}
+{#     </nav> #}
+{#     {% block content %} #}
+{#     {% endblock %} #}
+{#     <script type=text/javascript> #}
+{#         $SCRIPT_ROOT = {{ request.script_root|tojson|safe }}; #}
+{#     </script> #}
+{#     <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.js') }}"></script> #}
+{#     <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.timeago.js') }}"></script> #}
+{#     <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script> #}
+{#     <script type="text/javascript" src="{{ url_for('static', filename='js/renderjson.js') }}"></script> #}
+{#     <script type=text/javascript> #}
+{#     </script> #}
+{# </body> #}
+{# </html> #}

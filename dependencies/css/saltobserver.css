@@ -1,0 +1,110 @@
+/*
+ * Renderjson Customization
+ */
+.renderjson {
+    background-color: #252A3A;
+    font-weight: normal !important;
+    overflow: hidden;
+}
+.renderjson a {
+    text-decoration: none;
+}
+.renderjson .disclosure {
+    font-weight: bold;
+}
+.renderjson .syntax {
+    color: #978B70;
+}
+.renderjson .string {
+    color: #D3BE47;
+}
+.renderjson .number {
+    color: #7059A8;
+}
+.renderjson .boolean {
+    font-weight: bold;
+    color: #F5CD73;
+}
+.renderjson .key {
+    color: #4B7197;
+}
+.renderjson .object.syntax {
+    color: #978B70;
+}
+.renderjson .array.syntax {
+    color: #978B70;
+}
+
+/*
+ * Custom Styles
+ */
+
+.minion-item {
+    padding: 0.9em 1em;
+    border-bottom: 1px solid #ddd;
+    border-left: 6px solid transparent;
+    word-wrap: break-word;
+}
+.minion-name {
+    margin: 0;
+}
+.jid-time {
+    font-size: 80%;
+    margin: 0.4em 0;
+}
+.minion-item-selected {
+    background: #eee;
+}
+.minion-item-new {
+    border-left: 6px solid #1b98f8;
+}
+.count-box{
+    font-size: 3em;
+    margin: 50px;
+    background: none repeat scroll 0% 0% #252A3A;
+    color: #eee;
+    float: center;
+    text-align: center;
+}
+.count-title {
+    font-size: 0.3em;
+    font-weight: bold;
+    float: bottom;
+    color: #4B7197;
+    padding-bottom: 1%;
+}
+.centered-content {
+    margin: 5%;
+}
+.hidden {
+    display: none;
+}
+.stat-table {
+    width: 100%;
+}
+
+
+
+/* Content Styles */
+.content-header, .content-body {
+    padding: 1em 2em;
+}
+.content-header {
+    border-bottom: 1px solid #ddd;
+}
+.content-title {
+    margin: 0.5em 0 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.content-subtitle {
+    font-size: 1em;
+    margin: 0;
+    font-weight: normal;
+}
+.content-controls {
+    margin-top: 2em;
+    text-align: right;
+    margin-bottom: 0.3em;
+}
