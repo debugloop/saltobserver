@@ -87,8 +87,8 @@ def jobs(jid):
 
 @app.route('/jobs')
 def jobsearch():
-    if request.args.get('job', None):
-        return redirect(url_for('jobs', jid=request.args.get('job')))
+    if request.args.get('jobid', None):
+        return redirect(url_for('jobs', jid=request.args.get('jobid')))
     return render_template('jobform.html')
 
 @app.route('/history/<minion>/<function>')
@@ -104,14 +104,12 @@ def history(minion, function):
 
 @app.route('/history')
 def historysearch():
-    if request.args.get('minion', None) and request.args.get('function', None):
-        return redirect(url_for('history', minion=request.args.get('minion'), function=request.args.get('function')))
+    if request.args.get('minionid', None) and request.args.get('function', None):
+        return redirect(url_for('history', minion=request.args.get('minionid'), function=request.args.get('function')))
     return render_template('historyform.html')
 
 @app.route('/functions/<function>')
-def function(function):
-    if request.args.get('q', None):
-        return redirect(url_for('functions', function=request.args.get('q')))
+def function(function=None):
     functions = list()
     times_list = list()
     for minion in redis.sort('minions', alpha=True):

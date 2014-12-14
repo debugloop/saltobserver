@@ -36,14 +36,17 @@
 }
 
 /*
- * Custom Styles
+ * Sidebar
  */
 
 .minion-item {
     padding: 0.9em 1em;
     border-bottom: 1px solid #ddd;
     border-left: 6px solid transparent;
-    word-wrap: break-word;
+    overflow: auto;
+}
+.minion-item::-webkit-scrollbar {
+    display: none;
 }
 .minion-name {
     margin: 0;
@@ -58,6 +61,11 @@
 .minion-item-new {
     border-left: 6px solid #1b98f8;
 }
+
+/*
+ * Placeholder Content
+ */
+
 .count-box{
     font-size: 3em;
     margin: 50px;
@@ -76,16 +84,17 @@
 .centered-content {
     margin: 5%;
 }
+
+/*
+ * Real Content
+ */
+
 .hidden {
     display: none;
 }
 .stat-table {
     width: 100%;
 }
-
-
-
-/* Content Styles */
 .content-header, .content-body {
     padding: 1em 2em;
 }
@@ -107,4 +116,14 @@
     margin-top: 2em;
     text-align: right;
     margin-bottom: 0.3em;
+}
+
+/*
+ * Searchpages
+ */
+
+.searchpage {
+    margin-top: 10%;
+    text-align: center;
+    width: 100%;
 }

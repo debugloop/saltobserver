@@ -1,49 +1,51 @@
 {% extends "base.html" %}
 {% block title %}Salt Observer: {{ request.view_args.get('function') }} {% endblock %}
 {% set active_page = request.view_args.get('function') %}
-{% block content %}
-    <div id="list" class="pure-u-1">
-       {% for (minion, jid, time) in functions %}
-        <div id="minion-item-{{ minion }}" class="minion-item pure-g">
-            <div class="pure-u-3-4">
-                <h4 class="minion-name">{{ minion }}</h4>
-                <p class="jid-time">{{ time }}</p>
-            </div>
+{% block list %}
+<div id="list" class="pure-u-1">
+   {% for (minion, jid, time) in functions %}
+    <div id="minion-item-{{ minion }}" class="minion-item pure-g">
+        <div class="pure-u-3-4">
+            <h4 class="minion-name">{{ minion }}</h4>
+            <p class="jid-time">{{ time }}</p>
         </div>
-        {% endfor %}
     </div>
-    <div id="main" class="pure-u-1">
-        <div id="default-content" class="centered-content">
-            <div class="pure-g">
-                <div class="pure-u-1">
-                    <div class="count-box">
-                        <h1>{{ functions|length }}</h1>
-                        <div class="count-title">
-                            Minion{{ functions|length|pluralize }} ha{{ functions|length|pluralize("s", "ve") }} run this function...
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="pure-g">
-                <div class="pure-u-1">
-                    <div class="count-box">
-                        <h1>{{ average_run|round(1) }}</h1>
-                        <div class="count-title">
-                            ...time{{ average_run|pluralize }}{{ functions|length|pluralize("", " on average") }}.
-                        </div>
+    {% endfor %}
+</div>
+{% endblock %}
+{% block content %}
+<div id="main" class="pure-u-1">
+    <div id="default-content" class="centered-content">
+        <div class="pure-g">
+            <div class="pure-u-1">
+                <div class="count-box">
+                    <h1>{{ functions|length }}</h1>
+                    <div class="count-title">
+                        Minion{{ functions|length|pluralize }} ha{{ functions|length|pluralize("s", "ve") }} run this function...
                     </div>
                 </div>
             </div>
         </div>
-        <div id="real-content" class="hidden">
-        {% include "default_layout.html" %}
+        <div class="pure-g">
+            <div class="pure-u-1">
+                <div class="count-box">
+                    <h1>{{ average_run|round(1) }}</h1>
+                    <div class="count-title">
+                        ...time{{ average_run|pluralize }}{{ functions|length|pluralize("", " on average") }}.
+                    </div>
+                </div>
+            </div>
         </div>
+    </div>
+    <div id="real-content" class="hidden">
+    {% include "default_layout.html" %}
     </div>
 </div>
 {% endblock %}
 
 {% block scripts %}
-    <script type="text/javascript" src="{{ url_for('static', filename='js/socket.io.min.js') }}"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.4.1/jquery.timeago.min.js"></script>
+    <script src="https://cdn.socket.io/socket.io-1.2.1.js"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/renderjson.js') }}"></script>
 
     <script type=text/javascript>
@@ -56,7 +58,8 @@
         {% endfor %}
 
         renderjson.set_icons('+', '-');
-        renderjson.set_show_to_level(1);
+        renderjson.set_show_to_level(2);
+
         function generate_content(json, time){
             $('#default-content').hide();
             $('#real-content').removeClass('hidden');
@@ -81,7 +84,6 @@
             }
 
             $('#raw-wrapper').html(renderjson(json));
-            $('.hastooltip').tooltip();
         }
 
         var socket = io.connect('/subscription');
