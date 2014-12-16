@@ -6,9 +6,9 @@ This is a simple webapp for presenting data as offered by `Salt's Redis
 Returner`_ written in `Flask`_. It features:
 - a simple and clean interface
 - three views:
-    - a function view showing all minions that ran a particular function
-    - a history view for looking at a minion's history with a specific function
-    - a job view listing all minions which ran a specific job
+  1. a function view showing all minions that ran a particular function
+  2. a history view for looking at a minion's history with a specific function
+  3. a job view listing all minions which ran a specific job
 - a customizable navbar, which links to function views
 - searchpages for everything
 - live updates for the function view using websockets and `Redis Keyspace Notifications`_
