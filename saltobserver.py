@@ -9,9 +9,10 @@ import json
 import time
 from redis import Redis
 
-app = Flask(__name__, static_folder='dependencies')
+app = Flask(__name__, static_folder='static')
 app.config['DEBUG'] = True
 
+app.config['USE_CDN'] = True
 app.config['FUNCTION_QUICKLIST'] = ['state.highstate', 'state.sls', 'pkg.upgrade', 'test.ping']
 
 app.config['REDIS_HOST'] = 'localhost'

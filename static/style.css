@@ -1,0 +1,292 @@
+/*
+ * Much of this stylesheet was adapted from purecss.io's email example layout:
+ * http://purecss.io/layouts/email/
+ */
+/*
+ * Basics
+ */
+body {
+    color: #333;
+}
+
+a {
+    text-decoration: none;
+    color: #1b98f8;
+}
+
+/*
+ * Custom Look and Feel for purecss.io stuff
+ */
+.primary-button,
+.secondary-button {
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    border-radius: 20px;
+}
+.primary-button {
+    color: #fff;
+    background: #1b98f8;
+    margin: 1em 0;
+}
+.secondary-button {
+    background: #fff;
+    border: 1px solid #ddd;
+    color: #666;
+    padding: 0.5em 2em;
+    font-size: 80%;
+}
+
+#nav .pure-menu.pure-menu-open {
+    background: transparent;
+    border: none;
+    text-align: left;
+}
+    #nav .pure-menu a:hover,
+    #nav .pure-menu a:focus {
+        background: rgb(55, 60, 90);
+    }
+    #nav .pure-menu a {
+        color: #fff;
+        margin-left: 0.5em;
+    }
+    #nav .pure-menu-heading {
+        border-bottom: none;
+        font-size:110%;
+        color: rgb(75, 113, 151);
+    }
+
+/*
+ * Sidebar Listing
+ */
+
+.minion-item {
+    padding: 0.9em 1em;
+    border-bottom: 1px solid #ddd;
+    border-left: 6px solid transparent;
+    overflow: auto;
+}
+.minion-item::-webkit-scrollbar {
+    display: none;
+}
+.minion-name {
+    margin: 0;
+}
+.jid-time {
+    font-size: 80%;
+    margin: 0.4em 0;
+}
+.minion-item-selected {
+    background: #eee;
+}
+.minion-item-new {
+    border-left: 6px solid #1b98f8;
+}
+
+/*
+ * Layout for Phones and up
+ */
+#layout, #nav, #list, #main {
+    margin: 0;
+    padding: 0;
+}
+
+#nav {
+    width: 100%;
+    height: 40px;
+    position: relative;
+    background: rgb(37, 42, 58);
+    text-align: center;
+}
+#nav .nav-menu-button {
+    display: block;
+    top: 0.5em;
+    right: 0.5em;
+    position: absolute;
+}
+
+#nav.active {
+    height: 80%;
+}
+.nav-inner {
+    display: none;
+}
+
+#nav.active .nav-inner {
+    display: block;
+    padding: 2em 0;
+}
+
+/*
+ * Layout for Mid-size and up
+ */
+@media (min-width: 40em) {
+    #layout {
+        padding-left:530px;
+        position: relative;
+    }
+
+    #nav, #list {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        overflow: auto;
+    }
+
+    #nav {
+        margin-left:-530px;
+        width:180px;
+        height: 100%;
+    }
+
+    .nav-inner {
+        display: block;
+        padding: 2em 0;
+    }
+
+    #nav .nav-menu-button {
+        display: none;
+    }
+
+    #list {
+        margin-left: -350px;
+        width: 100%;
+        height: 33%;
+        border-bottom: 1px solid #ddd;
+    }
+
+    #main {
+        position: fixed;
+        top: 33%;
+        right: 0;
+        bottom: 0;
+        left: 180px;
+        overflow: auto;
+        width: auto;
+    }
+}
+
+/*
+ * Fullsize Layout
+ */
+@media (min-width: 60em) {
+    #list {
+        margin-left: -350px;
+        width:350px;
+        height: 100%;
+        border-right: 1px solid #ddd;
+    }
+
+    #main {
+        position: static;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+    }
+}
+
+/*
+ * Placeholder Content
+ */
+
+.count-box{
+    font-size: 3em;
+    margin: 50px;
+    background: none repeat scroll 0% 0% #252A3A;
+    color: #eee;
+    float: center;
+    text-align: center;
+}
+.count-title {
+    font-size: 0.3em;
+    font-weight: bold;
+    float: bottom;
+    color: #4B7197;
+    padding-bottom: 1%;
+}
+.centered-content {
+    margin: 5%;
+}
+
+/*
+ * Real Content
+ */
+
+.hidden {
+    display: none;
+}
+.stat-table {
+    width: 100%;
+}
+.content-header, .content-body {
+    padding: 1em 2em;
+}
+.content-header {
+    border-bottom: 1px solid #ddd;
+}
+.content-title {
+    margin: 0.5em 0 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.content-subtitle {
+    font-size: 1em;
+    margin: 0;
+    font-weight: normal;
+}
+.content-controls {
+    margin-top: 2em;
+    text-align: right;
+    margin-bottom: 0.3em;
+}
+#raw-wrapper {
+    font-size: 0.9em;
+}
+
+/*
+ * Renderjson Customization
+ */
+.renderjson {
+    background-color: #252A3A;
+    font-weight: normal !important;
+    overflow: hidden;
+}
+.renderjson a {
+    text-decoration: none;
+}
+.renderjson .disclosure {
+    font-weight: bold;
+}
+.renderjson .syntax {
+    color: #CFBFAD;
+}
+.renderjson .string {
+    color: #FFCD8B;
+}
+.renderjson .number {
+    color: #FFCD8B;
+}
+.renderjson .boolean {
+    font-weight: bold;
+    color: #87CEFA;
+}
+.renderjson .key {
+    color: #808BED;
+}
+.renderjson .object.syntax {
+    color: #CFBFAD;
+}
+.renderjson .array.syntax {
+    color: #CFBFAD;
+}
+
+/*
+ * Searchpages
+ */
+
+.searchpage {
+    margin-top: 10%;
+    text-align: center;
+    width: 100%;
+}

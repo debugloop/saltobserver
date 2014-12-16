@@ -52,14 +52,14 @@
 </div>
 {% endblock %}
 {% block scripts %}
+    {% if config.USE_CDN %}
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.4.1/jquery.timeago.min.js"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='js/renderjson.js') }}"></script>
-
+    <script src="//raw.githubusercontent.com/caldwell/renderjson/master/renderjson.js"></script>
+    {% else %}
+    <script src="{{ url_for('static', filename='jquery.timeago.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='renderjson.js') }}"></script>
+    {% endif %}
     <script type=text/javascript>
-
-        {% block morescripts %}
-        {% endblock %}
-
         renderjson.set_show_to_level(2);
 
         function generate_content(json, time){
@@ -89,4 +89,6 @@
             $('#raw-wrapper').html(renderjson(json));
         }
     </script>
+    {% block morescripts %}
+    {% endblock %}
 {% endblock %}

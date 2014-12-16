@@ -6,9 +6,12 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/pure-min.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/email.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/saltobserver.css') }}">
+    {% if config.USE_CDN %}
+    <link rel="stylesheet" href="//yui.yahooapis.com/pure/0.5.0/pure-min.css">
+    {% else %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='pure-min.css') }}">
+    {% endif %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 
     {% block head %}{% endblock %}
 </head>
@@ -35,20 +38,15 @@
     {% block list %}{% endblock %}
     {% block content %}{% endblock %}
 </div>
-
-<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.4.1/jquery.timeago.min.js"></script>
-
-<script src="http://yui.yahooapis.com/3.17.2/build/yui/yui-min.js"></script>
+{% if config.USE_CDN %}
+<script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
+{% else %}
+<script src="{{ url_for('static', filename='jquery-2.1.1.min.js') }}"></script>
+{% endif %}
 <script>
-    YUI().use('node-base', 'node-event-delegate', function (Y) {
-
-        var menuButton = Y.one('.nav-menu-button'),
-            nav        = Y.one('#nav');
-
-        // Setting the active class name expands the menu vertically on small screens.
-        menuButton.on('click', function (e) {
-            nav.toggleClass('active');
+    $(document).ready(function(){
+        $('.nav-menu-button').click(function() {
+            $('#nav').toggleClass('active');
         });
     });
 </script>

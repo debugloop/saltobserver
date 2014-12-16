@@ -46,13 +46,15 @@
 {% endblock %}
 
 {% block morescripts %}
-        {% for (minion, jid, time) in functions %}
+    <script type=text/javascript>
+    {% for (minion, jid, time) in functions %}
         $("#minion-item-{{ minion|replace(".", "\\\\.") }}").click(function() {
             $.ajax({ url:'/_get_function_data/{{ minion}}/{{ jid }}', success:function(result) {generate_content(result, '{{ time }}'); }});
             $(this).siblings('div').removeClass('minion-item-selected');
             $(this).removeClass('minion-item-new');
             $(this).addClass('minion-item-selected');
         });
+    {% endfor %}
 
         incoming = new WebSocket("ws://" + location.host + "/subscribe");
         incoming.onopen = function() {
@@ -61,6 +63,7 @@
         incoming.onmessage = function (message) {
             var data = JSON.parse(message.data);
             $('#minion-item-' + data['minion_id'].replace(/\./g, "\\.")).addClass("minion-item-new");
+            $('#minion-item-' + data['minion_id'].replace(/\./g, "\\.")).find('.jid-time').html(data['time']);
             $("#minion-item-" + data['minion_id'].replace(/\./g, "\\.")).click(function() {
                 $.ajax({ url:'/_get_function_data/' + data['minion_id'] + '/' + data['jid'], success:function(result) {generate_content(result, data['time']); }});
                 $(this).siblings('div').removeClass('minion-item-selected');
@@ -68,6 +71,5 @@
                 $(this).addClass('minion-item-selected');
             });
         };
-
-        {% endfor %}
+    </script>
 {% endblock %}

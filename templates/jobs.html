@@ -34,11 +34,13 @@
 {% endblock %}
 
 {% block morescripts %}
-        {% for minion in minions %}
+    <script type=text/javascript>
+    {% for minion in minions %}
         $("#minion-item-{{ minion|replace(".", "\\\\.") }}").click(function() {
             $.ajax({ url:'/_get_function_data/{{ minion}}/{{ request.view_args.get('jid') }}', success:function(result) {generate_content(result, '{{ time }}'); }});
             $(this).siblings('div').removeClass('minion-item-selected');
             $(this).addClass('minion-item-selected');
         });
-        {% endfor %}
+    {% endfor %}
+    </script>
 {% endblock %}
