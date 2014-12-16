@@ -13,26 +13,26 @@
     font-weight: bold;
 }
 .renderjson .syntax {
-    color: #978B70;
+    color: #CFBFAD;
 }
 .renderjson .string {
-    color: #D3BE47;
+    color: #FFCD8B;
 }
 .renderjson .number {
-    color: #7059A8;
+    color: #FFCD8B;
 }
 .renderjson .boolean {
     font-weight: bold;
-    color: #F5CD73;
+    color: #87CEFA;
 }
 .renderjson .key {
-    color: #4B7197;
+    color: #808BED;
 }
 .renderjson .object.syntax {
-    color: #978B70;
+    color: #CFBFAD;
 }
 .renderjson .array.syntax {
-    color: #978B70;
+    color: #CFBFAD;
 }
 
 /*
@@ -116,6 +116,9 @@
     margin-top: 2em;
     text-align: right;
     margin-bottom: 0.3em;
+}
+#raw-wrapper {
+    font-size: 0.9em;
 }
 
 /*

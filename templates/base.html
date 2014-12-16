@@ -20,8 +20,7 @@
             <div class="pure-menu pure-menu-open">
                 <ul>
                     <li class="pure-menu-heading">Functions</li>
-                    {% set quickfuncs_bar = [ 'state.highstate', 'state.sls', 'pkg.upgrade', 'test.ping' ] -%}
-                    {% for id in quickfuncs_bar %}
+                    {% for id in config.FUNCTION_QUICKLIST %}
                     <li><a {% if id == active_page %}class="pure-button-active"{% endif %} href="/functions/{{ id|e }}">{{ id|e }}</a></li>
                     {% endfor %}
                     <li class="pure-menu-heading">Search</li>

@@ -1,63 +1,44 @@
-{% extends "base.html" %}
-{% block navjobs %}active{% endblock %}
+{% extends "contentpage.html" %}
 {% block title %}Salt Observer: {{ request.view_args.get('jid') }} {% endblock %}
-{% block content %}
-<div class="container-fluid" style="height:100%;">
-    <div id="mainrow" class="row">
-        <div id="list" class="col-xs-4">
-            <div id="matched-function" class="page-header">
-                <h3>Minions executing this job</h3>
-            </div>
-            <div id="list-content" class="list-group" style="overflow: auto; height: 600px;">
-                {% for minion in minions %}
-                <a href="#" id="btn-{{ minion }}" class="list-group-item"><strong>{{ minion }}</strong></a>
-                {% endfor %}
+{% set active_page = function %}
+
+{% block list %}
+<div id="list" class="pure-u-1">
+    {% for minion in minions %}
+    <div id="minion-item-{{ minion }}" class="minion-item pure-g">
+        <div class="pure-u-3-4">
+            <h4 class="minion-name">{{ minion }}</h4>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block default_content %}
+<div id="default-content" class="centered-content">
+    <div class="pure-g">
+        <div class="pure-u-1">
+            <div class="count-box">
+                <h1>{{ minions|length }}</h1>
+                <div class="count-title">
+                    Minion{{ minions|length|pluralize }} ha{{ minions|length|pluralize("s", "ve") }} run this job.
+                </div>
             </div>
         </div>
-        {% include "default_layout.html" %}
     </div>
 </div>
 {% endblock %}
-{% block scripts %}
-    <script type=text/javascript>
+
+{% block content_buttons %}
+    <a id="function-btn" class="pure-button-primary pure-button">View Function</a>
+{% endblock %}
+
+{% block morescripts %}
         {% for minion in minions %}
-        $("#btn-{{ minion|replace(".", "\\\\.") }}").click(function() {
+        $("#minion-item-{{ minion|replace(".", "\\\\.") }}").click(function() {
             $.ajax({ url:'/_get_function_data/{{ minion}}/{{ request.view_args.get('jid') }}', success:function(result) {generate_content(result, '{{ time }}'); }});
-            $(this).siblings('a').removeClass('active');
-            $(this).addClass('active');
+            $(this).siblings('div').removeClass('minion-item-selected');
+            $(this).addClass('minion-item-selected');
         });
         {% endfor %}
-
-        renderjson.set_icons('+', '-');
-        renderjson.set_show_to_level(2);
-        renderjson.set_sort_objects(true);
-        function generate_content(json, time){
-            $('#minion').html(json.id);
-            $('#function').html("<a href='/functions/" + json.fun + "'>" + json.fun + "</a>");
-            $('#hist-btn').attr('href', '/history/' + json.id + '/' + json.fun);
-            $('#jid-cell').html(json.jid);
-            $('#time').html(jQuery.timeago(time.replace(/, at /i, "T")));
-            try{
-                $('#number').html(Object.keys(json.return).length);
-            }catch(e){
-                $('#number').html('1');
-            }
-            if (json.success) {
-                $('#success').removeClass('danger');
-                $('#success').addClass('success');
-                $('#success').html("<span class='glyphicon glyphicon-ok'></span>");
-            } else {
-                $('#success').removeClass('success');
-                $('#success').addClass('danger');
-                $('#success').html("<span class='glyphicon glyphicon-remove'></span>");
-            }
-            $('#return-code').html(json.retcode);
-
-
-            $('#content > table').removeClass('hidden');
-            $('#content > div').removeClass('hidden');
-
-            $('#raw-wrapper').html(renderjson(json));
-        }
-    </script>
 {% endblock %}

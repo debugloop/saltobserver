@@ -1,6 +1,7 @@
-{% extends "base.html" %}
+{% extends "contentpage.html" %}
 {% block title %}Salt Observer: {{ request.view_args.get('function') }} {% endblock %}
 {% set active_page = request.view_args.get('function') %}
+
 {% block list %}
 <div id="list" class="pure-u-1">
    {% for (minion, jid, time) in functions %}
@@ -13,101 +14,60 @@
     {% endfor %}
 </div>
 {% endblock %}
-{% block content %}
-<div id="main" class="pure-u-1">
-    <div id="default-content" class="centered-content">
-        <div class="pure-g">
-            <div class="pure-u-1">
-                <div class="count-box">
-                    <h1>{{ functions|length }}</h1>
-                    <div class="count-title">
-                        Minion{{ functions|length|pluralize }} ha{{ functions|length|pluralize("s", "ve") }} run this function...
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="pure-g">
-            <div class="pure-u-1">
-                <div class="count-box">
-                    <h1>{{ average_run|round(1) }}</h1>
-                    <div class="count-title">
-                        ...time{{ average_run|pluralize }}{{ functions|length|pluralize("", " on average") }}.
-                    </div>
+
+{% block default_content %}
+<div id="default-content" class="centered-content">
+    <div class="pure-g">
+        <div class="pure-u-1">
+            <div class="count-box">
+                <h1>{{ functions|length }}</h1>
+                <div class="count-title">
+                    Minion{{ functions|length|pluralize }} ha{{ functions|length|pluralize("s", "ve") }} run this function...
                 </div>
             </div>
         </div>
     </div>
-    <div id="real-content" class="hidden">
-    {% include "default_layout.html" %}
+    <div class="pure-g">
+        <div class="pure-u-1">
+            <div class="count-box">
+                <h1>{{ average_run|round(1) }}</h1>
+                <div class="count-title">
+                    ...time{{ average_run|pluralize }}{{ functions|length|pluralize("", " on average") }}.
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}
 
-{% block scripts %}
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.4.1/jquery.timeago.min.js"></script>
-    <script src="https://cdn.socket.io/socket.io-1.2.1.js"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='js/renderjson.js') }}"></script>
+{% block content_buttons %}
+    <a id="jid-btn" class="pure-button">Go to Job</a>
+    <a id="hist-btn" class="pure-button-primary pure-button">View Execution History</a>
+{% endblock %}
 
-    <script type=text/javascript>
+{% block morescripts %}
         {% for (minion, jid, time) in functions %}
         $("#minion-item-{{ minion|replace(".", "\\\\.") }}").click(function() {
             $.ajax({ url:'/_get_function_data/{{ minion}}/{{ jid }}', success:function(result) {generate_content(result, '{{ time }}'); }});
             $(this).siblings('div').removeClass('minion-item-selected');
+            $(this).removeClass('minion-item-new');
             $(this).addClass('minion-item-selected');
         });
-        {% endfor %}
 
-        renderjson.set_icons('+', '-');
-        renderjson.set_show_to_level(2);
-
-        function generate_content(json, time){
-            $('#default-content').hide();
-            $('#real-content').removeClass('hidden');
-
-            $('#minion').html(json.id);
-            $('#function').html(json.fun);
-            $('#hist-btn').attr('href', '/history/' + json.id + '/' + json.fun);
-            $('#jid').html(json.jid);
-            $('#jid-btn').attr('href', '/jobs/' + json.jid);
-            $('#time').html(jQuery.timeago(time.replace(/, at /i, "T")));
-            try{
-                $('#number').html(Object.keys(json.return).length);
-            }catch(e){
-                $('#number').html('1');
-            }
-            if (json.success) {
-                $('#success').html("&#x2713;");
-                $('#return-code').parent().hide();
-            } else {
-                $('#success').html("&#x2717;");
-                $('#return-code').html(json.retcode);
-            }
-
-            $('#raw-wrapper').html(renderjson(json));
-        }
-
-        var socket = io.connect('/subscription');
-        socket.emit('subscribe_function', "{{ request.view_args.get('function') }}")
-        socket.on("subscribe_function", function(msg) {
-            escaped_minion_id = msg.minion_id.replace(/\./g, "\\.");
-            $('#update-' + escaped_minion_id).addClass("badge badge-update");
-            if ($.isNumeric($('#update-' + escaped_minion_id).text())) {
-                $('#update-' + escaped_minion_id).text($('#update-' + escaped_minion_id).text() - -1);
-            } else {
-                $('#update-' + escaped_minion_id).text("1");
-            }
-            $('#btn-' + escaped_minion_id).off('click');
-            $('#btn-' + escaped_minion_id).click(function() {
-                $.ajax({ url:"/_get_function_data/" + msg.minion_id + "/" + msg.jid , success:function(result) {generate_content(result, msg.time); }});
-                $(this).siblings('a').removeClass('active');
-                $(this).addClass('active');
-                $(this).children('span').html("<small class='small pull-right'>(<em>'" + msg.time + "</em>)</small>");
-                $(this).children('span').removeClass('badge badge-update');
+        incoming = new WebSocket("ws://" + location.host + "/subscribe");
+        incoming.onopen = function() {
+            incoming.send("{{ request.view_args.get('function') }}");
+        };
+        incoming.onmessage = function (message) {
+            var data = JSON.parse(message.data);
+            $('#minion-item-' + data['minion_id'].replace(/\./g, "\\.")).addClass("minion-item-new");
+            $("#minion-item-" + data['minion_id'].replace(/\./g, "\\.")).click(function() {
+                $.ajax({ url:'/_get_function_data/' + data['minion_id'] + '/' + data['jid'], success:function(result) {generate_content(result, data['time']); }});
+                $(this).siblings('div').removeClass('minion-item-selected');
+                $(this).removeClass('minion-item-new');
+                $(this).addClass('minion-item-selected');
             });
-        });
+        };
 
-        $(window).bind("unload", function() {
-            socket.socket.disconnect();
-        });
-    </script>
+        {% endfor %}
 {% endblock %}
