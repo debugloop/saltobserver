@@ -20,19 +20,6 @@ def get_function_data(minion, jid):
     data = redis.get('{0}:{1}'.format(minion, jid))
     return Response(response=data, status=200, mimetype="application/json")
 
-@app.route('/stats')
-def stats():
-    highstates = list()
-    slss = list()
-    pings = list()
-    upgrades = list()
-    for minion in redis.sort('minions', alpha=True):
-        highstates.append((minion, len(redis.lrange('{0}:state.highstate'.format(minion), 0, -1))))
-        slss.append((minion, len(redis.lrange('{0}:state.sls'.format(minion), 0, -1))))
-        pings.append((minion, len(redis.lrange('{0}:test.ping'.format(minion), 0, -1))))
-        upgrades.append((minion, len(redis.lrange('{0}:pkg.upgrade'.format(minion), 0, -1))))
-    return render_template('stats.html', highstates=highstates, slss=slss, pings=pings, upgrades=upgrades)
-
 @app.route('/jobs/<jid>')
 def jobs(jid):
     ret = list()
