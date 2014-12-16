@@ -57,6 +57,8 @@ class RedisStream(object):
     def run(self):
         for data in self._generator():
             for client, function in self.clients:
+                print data
+                print function
                 if data['function'] == function:
                     gevent.spawn(self.send_or_discard_connection, (client, function), data)
 

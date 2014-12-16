@@ -27,9 +27,9 @@
                     <li><a {% if id == active_page %}class="pure-button-active"{% endif %} href="/functions/{{ id|e }}">{{ id|e }}</a></li>
                     {% endfor %}
                     <li class="pure-menu-heading">Search</li>
-                    {% set search_bar = [ ('sfunctions', 'Functions', '/functions'), ('sjobs', 'Jobs', '/jobs'), ('shistory', 'History', '/history') ] -%}
-                    {% for id, caption, href in search_bar %}
-                    <li><a {% if id == active_page %}class="pure-button-active"{% endif %} href="{{ href }}">{{ caption }}</a></li>
+                    {% set search_bar = [ ('Functions', '/functions'), ('Jobs', '/jobs'), ('History', '/history') ] -%}
+                    {% for caption, href in search_bar %}
+                    <li><a href="{{ href }}">{{ caption }}</a></li>
                     {% endfor %}
                 </ul>
             </div>
