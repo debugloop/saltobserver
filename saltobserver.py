@@ -2,23 +2,24 @@ from flask import Flask, Response
 from flask import render_template, redirect, url_for, request, abort
 
 import gevent
-from gevent import monkey; monkey.patch_all()
+from geventwebsocket.websocket import WebSocketError
+from flask_sockets import Sockets
 
-from socketio import socketio_manage
-from socketio.server import SocketIOServer
-from socketio.namespace import BaseNamespace
-from socketio.mixins import BroadcastMixin
-
+import json
 import time
 from redis import Redis
 
 app = Flask(__name__, static_folder='dependencies')
 app.config['DEBUG'] = True
 
+app.config['FUNCTION_QUICKLIST'] = ['state.highstate', 'state.sls', 'pkg.upgrade', 'test.ping']
+
 app.config['REDIS_HOST'] = 'localhost'
 app.config['REDIS_PORT'] = 6379
 app.config['REDIS_DB'] = 0
 app.config['REDIS_PASS'] = None
+
+sockets = Sockets(app)
 
 redis = Redis(
         host=app.config['REDIS_HOST'],
@@ -27,24 +28,42 @@ redis = Redis(
         password=app.config['REDIS_PASS'])
 redis.config_set('notify-keyspace-events', 'Kls')
 
-class RedisStream(BaseNamespace, BroadcastMixin):
-    def redis_emitter(self, channel, subscription):
-        pubsub = Redis().pubsub()
-        pubsub.subscribe(subscription)
-        for message in pubsub.listen():
-            if message['type'] == 'message':
+class RedisStream(object):
+    def __init__(self):
+        self.clients = list()
+        self.pubsub = Redis().pubsub()
+        self.pubsub.psubscribe(["__keyspace@0__:{0}:*.*".format(minion) for minion in redis.smembers('minions')])
+
+    def _generator(self):
+        for message in self.pubsub.listen():
+            if message['type'] == 'pmessage':
                 minion_id = message['channel'].split(':')[1]
                 function = message['channel'].split(':')[2]
                 jid = redis.lindex('{0}:{1}'.format(minion_id, function), 0)
                 timestamp = time.strptime(jid, "%Y%m%d%H%M%S%f")
-                self.emit(channel, dict(minion_id=minion_id, jid=jid, time=time.strftime('%Y-%m-%d, at %H:%M:%S', timestamp)))
+                yield dict(minion_id=minion_id, function=function, jid=jid, time=time.strftime('%Y-%m-%d, at %H:%M:%S', timestamp))
 
-    def on_subscribe_function(self, function):
-        redis_channels = ["__keyspace@0__:{0}:{1}".format(minion, function) for minion in redis.smembers('minions')]
-        self.spawn(self.redis_emitter, channel='subscribe_function', subscription=redis_channels)
+    def register(self, client, function):
+        self.clients.append((client, function))
 
-    def on_subscribe_history(self, history):
-        self.spawn(self.redis_emitter, channel='subscribe_history', subscription="__keyspace@0__:{0}".format(history))
+    def send_or_discard_connection(self, client_tupl, data):
+        client, function = client_tupl
+        try:
+            client.send(json.dumps(data))
+        except Exception:
+            self.clients.remove(client_tupl)
+
+    def run(self):
+        for data in self._generator():
+            for client, function in self.clients:
+                if data['function'] == function:
+                    gevent.spawn(self.send_or_discard_connection, (client, function), data)
+
+    def start(self):
+        gevent.spawn(self.run)
+
+stream = RedisStream()
+stream.start()
 
 @app.template_filter('pluralize')
 def pluralize(number, singular='', plural='s'):
@@ -78,12 +97,15 @@ def jobs(jid):
     ret = list()
     for minion in redis.keys('*:%s' % jid):
         ret.append(minion.split(':')[0])
+    # TODO: this following line is just for the navigation-bar highlight. make
+    # it less ugly?
+    function = json.loads(redis.get('{0}:{1}'.format(ret[0], jid)))['fun']
     try:
         timestamp = time.strptime(jid, "%Y%m%d%H%M%S%f")
         at_time = time.strftime('%Y-%m-%d, at %H:%M:%S', timestamp)
     except Exception:
         at_time = None
-    return render_template('jobs.html', minions=ret, time=at_time)
+    return render_template('jobs.html', minions=ret, time=at_time, function=function)
 
 @app.route('/jobs')
 def jobsearch():
@@ -109,7 +131,7 @@ def historysearch():
     return render_template('historyform.html')
 
 @app.route('/functions/<function>')
-def function(function=None):
+def function(function):
     functions = list()
     times_list = list()
     for minion in redis.sort('minions', alpha=True):
@@ -126,21 +148,27 @@ def function(function=None):
 
 @app.route('/functions')
 def functionsearch():
-    # get param or
     if request.args.get('function', None):
         return redirect(url_for('functions', function=request.args.get('function')))
     return render_template('functionform.html')
 
+@sockets.route('/subscribe_alt')
+def outgoing(ws):
+    stream.register(ws, "test.ping")
+    while ws is not None:
+        gevent.sleep()
+
+@sockets.route('/subscribe')
+def subscribe(ws):
+    while ws is not None:
+        gevent.sleep(0.1)
+        try:
+            message = ws.receive()
+        except WebSocketError:
+            ws = None
+        if message:
+            stream.register(ws, message)
+
 @app.route('/')
 def functions():
-    # get param or default, but always redirect to function view
     return redirect(url_for('function', function=request.args.get('function', 'state.highstate')))
-
-@app.route('/socket.io/<path:remaining>')
-def socketio(remaining):
-    socketio_manage(request.environ, {'/subscription': RedisStream}, request)
-    return Response()
-
-if __name__ == '__main__':
-    print 'Listening on http://0.0.0.0:8000'
-    SocketIOServer(('0.0.0.0', 8000), app, resource="socket.io", policy_server=False).serve_forever()
