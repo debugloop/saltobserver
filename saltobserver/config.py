@@ -1,5 +1,7 @@
 DEBUG = False
 
+LOG_FILE = 'saltobserver_app.log'
+
 # If set to false, flask's url handling will be used for external libraries.
 # The static directory contains a script to download all dependencies.
 USE_CDN = True
