@@ -17,6 +17,7 @@ redis = Redis(
 
 @app.route('/_get_function_data/<minion>/<jid>')
 def get_function_data(minion, jid):
+    """AJAX access for loading function/job details."""
     data = redis.get('{0}:{1}'.format(minion, jid))
     return Response(response=data, status=200, mimetype="application/json")
 
@@ -82,10 +83,11 @@ def functionsearch():
 
 @sockets.route('/subscribe')
 def subscribe(ws):
+    """WebSocket endpoint, used for liveupdates"""
     while ws is not None:
         gevent.sleep(0.1)
         try:
-            message = ws.receive()
+            message = ws.receive() # expect function name to subscribe to
             if message:
                 stream.register(ws, message)
         except WebSocketError:
