@@ -93,4 +93,4 @@ def subscribe(ws):
 
 @app.route('/')
 def functions():
-    return redirect(url_for('function', function=request.args.get('function', 'state.highstate')))
+    return redirect(url_for('function', function=request.args.get('function', app.config['DEFAULT_FUNCTION'])))

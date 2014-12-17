@@ -6,8 +6,10 @@ LOG_FILE = 'saltobserver_app.log'
 # The static directory contains a script to download all dependencies.
 USE_CDN = True
 
-# This configures the function list shown in the webinterface's navbar.
+# the function list shown in the webinterface's navbar.
 FUNCTION_QUICKLIST = ['state.highstate', 'state.sls', 'pkg.upgrade', 'test.ping']
+# the default redirect when visiting /
+DEFAULT_FUNCTION = 'state.highstate'
 
 REDIS_HOST = 'localhost'
 REDIS_PORT = 6379
