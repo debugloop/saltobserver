@@ -4,7 +4,7 @@ This is a simple webapp for presenting data as offered by [Salt's Redis
 Returner](https://github.com/saltstack/salt/blob/develop/salt/returners/redis_return.py)
 written in [Flask](http://flask.pocoo.org/).
 
-![Screenshot of Saltobserver (17-12-2014)](http://danieln.de/public/saltobserver.png)
+![Screenshot of Saltobserver (17-12-2014)](http://files.danieln.de/public/saltobserver.png)
 
 ### Features
 - a simple and responsive interface
