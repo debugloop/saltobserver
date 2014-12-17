@@ -17,7 +17,7 @@ written in [Flask](http://flask.pocoo.org/).
 - searchpages for everything
 - live updates for the function view using websockets and [Redis' Keyspace
   Notifications](http://redis.io/topics/notifications)
-- a collapsible raw job data using
+- a collapsible representation of raw job data using the awesome
   [renderjson](https://github.com/caldwell/renderjson)
 
 
