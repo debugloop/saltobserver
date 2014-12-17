@@ -1,9 +1,4 @@
 flask
-gevent-socketio
+flask_sockets
+gunicorn
 redis
-
-# If there are problems with the latest versions of these packages,
-# saltobserver was tested with the following versions:
-#flask==0.10.1
-#gevent-socketio==0.3.6
-#redis==2.10.2
