@@ -1,5 +1,5 @@
 from flask import Flask
-from flask_sockets import Sockets
+
 app = Flask(__name__)
 app.config.from_object('saltobserver.config')
 
@@ -15,11 +15,16 @@ file_handler.setFormatter(Formatter(
 app.logger.addHandler(file_handler)
 app.logger.setLevel(logging.DEBUG)
 
-sockets = Sockets(app)
-
-from saltobserver.redis_stream import RedisStream
-stream = RedisStream()
-stream.start()
+if app.config['USE_LIVEUPDATES']:
+    from saltobserver.redis_stream import RedisStream
+    try:
+        stream = RedisStream()
+        stream.start()
+    except NotImplementedError:
+        app.config['USE_LIVEUPDATES'] = False # override configuration
+        app.logger.error("Live updates not available, Redis version not sufficient (minimum is v2.8).")
 
 import saltobserver.filters
 import saltobserver.views
+if app.config['USE_LIVEUPDATES']:
+    import saltobserver.websockets

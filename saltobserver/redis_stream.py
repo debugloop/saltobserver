@@ -2,21 +2,26 @@ from saltobserver import app
 import gevent
 
 from redis import Redis
+from distutils.version import StrictVersion
 
 import json
 import time
 
 class RedisStream(object):
     def __init__(self):
-        self.clients = list()
         self.redis = Redis(
                 host=app.config['REDIS_HOST'],
                 port=app.config['REDIS_PORT'],
                 db=app.config['REDIS_DB'],
                 password=app.config['REDIS_PASS'])
+        actual_version = StrictVersion(self.redis.info()['redis_version'])
+        minimum_version = StrictVersion("2.8.0")
+        if actual_version < minimum_version:
+            raise NotImplementedError
         self.redis.config_set('notify-keyspace-events', 'Kls')
         self.pubsub = self.redis.pubsub()
         self.pubsub.psubscribe(["__keyspace@0__:{0}:*.*".format(minion) for minion in self.redis.smembers('minions')])
+        self.clients = list()
 
     def _generator(self):
         for message in self.pubsub.listen():

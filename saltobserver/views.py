@@ -1,6 +1,4 @@
-from saltobserver import app, sockets, stream
-import gevent
-from geventwebsocket.websocket import WebSocketError
+from saltobserver import app
 
 from flask import Response
 from flask import render_template, redirect, url_for, request
@@ -80,18 +78,6 @@ def functionsearch():
     if request.args.get('function', None):
         return redirect(url_for('functions', function=request.args.get('function')))
     return render_template('functionform.html')
-
-@sockets.route('/subscribe')
-def subscribe(ws):
-    """WebSocket endpoint, used for liveupdates"""
-    while ws is not None:
-        gevent.sleep(0.1)
-        try:
-            message = ws.receive() # expect function name to subscribe to
-            if message:
-                stream.register(ws, message)
-        except WebSocketError:
-            ws = None
 
 @app.route('/')
 def functions():

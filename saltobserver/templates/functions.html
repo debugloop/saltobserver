@@ -56,6 +56,7 @@
         });
     {% endfor %}
 
+    {% if config.USE_LIVEUPDATES %}
         incoming = new WebSocket("ws://" + location.host + "/subscribe");
         incoming.onopen = function() {
             incoming.send("{{ request.view_args.get('function') }}");
@@ -71,5 +72,6 @@
                 $(this).addClass('minion-item-selected');
             });
         };
+    {% endif %}
     </script>
 {% endblock %}
