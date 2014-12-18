@@ -85,4 +85,5 @@ if __name__ == '__main__':
 
     app.config['USE_LIVEUPDATES'] = False
     app.config['FREEZER_DESTINATION'] = '../scripts/frozen'
+    app.config['FREEZER_RELATIVE_URLS'] = True
     freezer.freeze()
