@@ -85,5 +85,5 @@ if __name__ == '__main__':
 
     app.config['USE_LIVEUPDATES'] = False
     app.config['FREEZER_DESTINATION'] = '../scripts/frozen'
-    app.config['FREEZER_RELATIVE_URLS'] = True
+    app.config['FREEZER_BASE_URL'] = 'http://analogbyte.github.io/saltobserver/'
     freezer.freeze()
