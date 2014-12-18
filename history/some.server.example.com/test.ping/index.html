@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Salt Observer: History for some.server.example.com </title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <link rel="stylesheet" href="//yui.yahooapis.com/pure/0.5.0/pure-min.css">
+    
+    <link rel="stylesheet" href="/static/style.css">
+
+    
+</head>
+<body>
+<div id="layout" class="content pure-g">
+    <div id="nav" class="pure-u">
+        <a href="#" class="nav-menu-button">Menu</a>
+        <div class="nav-inner">
+            <div class="pure-menu pure-menu-open">
+                <ul>
+                    <li class="pure-menu-heading">Functions</li>
+                    
+                    <li><a  href="/functions/state.highstate">state.highstate</a></li>
+                    
+                    <li><a  href="/functions/state.sls">state.sls</a></li>
+                    
+                    <li><a  href="/functions/pkg.upgrade">pkg.upgrade</a></li>
+                    
+                    <li><a class="pure-button-active" href="/functions/test.ping">test.ping</a></li>
+                    
+                    <li class="pure-menu-heading">Search</li>
+                    
+                    <li><a href="/functions">Functions</a></li>
+                    
+                    <li><a href="/jobs">Jobs</a></li>
+                    
+                    <li><a href="/history">History</a></li>
+                    
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+<div id="list" class="pure-u-1">
+    
+    <div id="minion-item-20141117175928161514" class="minion-item pure-g">
+        <div class="pure-u-3-4">
+            <h4 class="minion-name">20141117175928161514</h4>
+            <p class="jid-time">2014-11-17, at 17:59:28</p>
+        </div>
+    </div>
+    
+</div>
+
+    
+<div id="main" class="pure-u-1">
+    
+<div id="default-content" class="centered-content">
+    <div class="pure-g">
+        <div class="pure-u-1">
+            <div class="count-box">
+                <h1>1</h1>
+                <div class="count-title">
+                    job for some.server.example.com
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div id="real-content" class="hidden">
+        <div class="content-header pure-g">
+            <div class="pure-u-2-3">
+                <h1 id="minion" class="content-title"></h1>
+                <p class="content-subtitle">
+                    executed <a id="function"></a> <span id="time"></span>
+                </p>
+            </div>
+
+            <div class="content-controls pure-u-1-3">
+                
+    <a id="jid-btn" class="pure-button">Go to Job</a>
+    <a id="function-btn" class="pure-button-primary pure-button">View Function</a>
+
+            </div>
+        </div>
+
+        <div class="content-body">
+            <div class="pure-g">
+                <div class="pure-u-1">
+                    <table class="stat-table pure-table pure-table-bordered">
+                        <tbody>
+                            <tr>
+                                <td>Job ID:</td>
+                                <td id="jid"></td>
+                            </tr>
+                            <tr>
+                                <td>Number of executed states:</td>
+                                <td id="number"></td>
+                            </tr>
+                            <tr>
+                                <td>Success:</td>
+                                <td id="success">&#x2713;</td>
+                            </tr>
+                            <tr>
+                                <td>Return Code:</td>
+                                <td id="return-code"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="pure-g">
+                <div id="raw-wrapper" class="pure-u-1">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+
+<script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
+
+<script>
+    $(document).ready(function(){
+        $('.nav-menu-button').click(function() {
+            $('#nav').toggleClass('active');
+        });
+    });
+</script>
+
+    
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.4.1/jquery.timeago.min.js"></script>
+    <script src="//raw.githubusercontent.com/caldwell/renderjson/master/renderjson.js"></script>
+    
+    <script type=text/javascript>
+        renderjson.set_show_to_level(2);
+
+        function generate_content(json, time){
+            if(typeof(json) == 'string') {
+                json = JSON.parse(json);
+            }
+            $('#default-content').hide();
+            $('#real-content').removeClass('hidden');
+
+            $('#minion').html(json.id);
+            $('#function').html(json.fun);
+            $('#jid').html(json.jid);
+            $('#function-btn').attr('href', '/functions/' + json.fun);
+            $('#hist-btn').attr('href', '/history/' + json.id + '/' + json.fun);
+            $('#jid-btn').attr('href', '/jobs/' + json.jid);
+            $('#time').html(jQuery.timeago(time.replace(/, at /i, "T")));
+            try{
+                $('#number').html(Object.keys(json.return).length);
+            }catch(e){
+                $('#number').html('1');
+            }
+            if (json.success) {
+                $('#success').html("&#x2713;");
+                $('#return-code').parent().hide();
+            } else {
+                $('#success').html("&#x2717;");
+                $('#return-code').html(json.retcode);
+            }
+
+            $('#raw-wrapper').html(renderjson(json));
+        }
+    </script>
+    
+    <script type=text/javascript>
+    
+        $("#minion-item-20141117175928161514").click(function() {
+            $.ajax({ url:'/_get_function_data/some.server.example.com/20141117175928161514', success:function(result) {generate_content(result, '2014-11-17, at 17:59:28'); }});
+            $(this).siblings('div').removeClass('minion-item-selected');
+            $(this).addClass('minion-item-selected');
+        });
+    
+    </script>
+
+
+</body>
+</html>
