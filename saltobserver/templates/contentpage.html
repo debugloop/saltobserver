@@ -63,6 +63,9 @@
         renderjson.set_show_to_level(2);
 
         function generate_content(json, time){
+            if(typeof(json) == 'string') {
+                json = JSON.parse(json);
+            }
             $('#default-content').hide();
             $('#real-content').removeClass('hidden');
 

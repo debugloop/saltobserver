@@ -13,13 +13,13 @@ redis = Redis(
         db=app.config['REDIS_DB'],
         password=app.config['REDIS_PASS'])
 
-@app.route('/_get_function_data/<minion>/<jid>')
+@app.route('/_get_function_data/<minion>/<jid>/')
 def get_function_data(minion, jid):
     """AJAX access for loading function/job details."""
     data = redis.get('{0}:{1}'.format(minion, jid))
     return Response(response=data, status=200, mimetype="application/json")
 
-@app.route('/jobs/<jid>')
+@app.route('/jobs/<jid>/')
 def jobs(jid):
     ret = list()
     for minion in redis.keys('*:%s' % jid):
@@ -34,13 +34,13 @@ def jobs(jid):
         at_time = None
     return render_template('jobs.html', minions=ret, time=at_time, function=function)
 
-@app.route('/jobs')
+@app.route('/jobs/')
 def jobsearch():
     if request.args.get('jobid', None):
         return redirect(url_for('jobs', jid=request.args.get('jobid')))
     return render_template('jobform.html')
 
-@app.route('/history/<minion>/<function>')
+@app.route('/history/<minion>/<function>/')
 def history(minion, function):
     ret = list()
     try:
@@ -51,13 +51,13 @@ def history(minion, function):
         pass
     return render_template('history.html', jids=ret)
 
-@app.route('/history')
+@app.route('/history/')
 def historysearch():
     if request.args.get('minionid', None) and request.args.get('function', None):
         return redirect(url_for('history', minion=request.args.get('minionid'), function=request.args.get('function')))
     return render_template('historyform.html')
 
-@app.route('/functions/<function>')
+@app.route('/functions/<function>/')
 def function(function):
     functions = list()
     times_list = list()
@@ -73,7 +73,7 @@ def function(function):
             continue
     return render_template('functions.html', functions=functions, average_run=float(sum(times_list))/len(times_list) if len(times_list) > 0 else 0)
 
-@app.route('/functions')
+@app.route('/functions/')
 def functionsearch():
     if request.args.get('function', None):
         return redirect(url_for('functions', function=request.args.get('function')))

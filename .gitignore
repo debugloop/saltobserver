@@ -1,2 +1,3 @@
 saltobserver_*.log
+scripts/frozen
 *.pyc
