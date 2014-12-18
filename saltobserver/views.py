@@ -81,4 +81,6 @@ def functionsearch():
 
 @app.route('/')
 def functions():
-    return redirect(url_for('function', function=request.args.get('function', app.config['DEFAULT_FUNCTION'])))
+    return function(app.config['DEFAULT_FUNCTION']) # work around mitsuhiko/werkzeug#382
+    # this would be the proper way to do it
+    #return redirect(url_for('function', function=request.args.get('function', app.config['DEFAULT_FUNCTION'])))
