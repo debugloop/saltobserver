@@ -155,9 +155,9 @@
             $('#minion').html(json.id);
             $('#function').html(json.fun);
             $('#jid').html(json.jid);
-            $('#function-btn').attr('href', '/functions/' + json.fun);
-            $('#hist-btn').attr('href', '/history/' + json.id + '/' + json.fun);
-            $('#jid-btn').attr('href', '/jobs/' + json.jid);
+            $('#function-btn').attr('href', '/saltobserver/functions/' + json.fun);
+            $('#hist-btn').attr('href', '/saltobserver/history/' + json.id + '/' + json.fun);
+            $('#jid-btn').attr('href', '/saltobserver/jobs/' + json.jid);
             $('#time').html(jQuery.timeago(time.replace(/, at /i, "T")));
             try{
                 $('#number').html(Object.keys(json.return).length);
