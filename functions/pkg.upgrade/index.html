@@ -22,21 +22,21 @@
                 <ul>
                     <li class="pure-menu-heading">Functions</li>
                     
-                    <li><a  href="/functions/state.highstate">state.highstate</a></li>
+                    <li><a  href="/saltobserver/functions/state.highstate/">state.highstate</a></li>
                     
-                    <li><a  href="/functions/state.sls">state.sls</a></li>
+                    <li><a  href="/saltobserver/functions/state.sls/">state.sls</a></li>
                     
-                    <li><a class="pure-button-active" href="/functions/pkg.upgrade">pkg.upgrade</a></li>
+                    <li><a class="pure-button-active" href="/saltobserver/functions/pkg.upgrade/">pkg.upgrade</a></li>
                     
-                    <li><a  href="/functions/test.ping">test.ping</a></li>
+                    <li><a  href="/saltobserver/functions/test.ping/">test.ping</a></li>
                     
                     <li class="pure-menu-heading">Search</li>
                     
-                    <li><a href="/functions">Functions</a></li>
+                    <li><a href="/saltobserver/functions/">Functions</a></li>
                     
-                    <li><a href="/jobs">Jobs</a></li>
+                    <li><a href="/saltobserver/jobs/">Jobs</a></li>
                     
-                    <li><a href="/history">History</a></li>
+                    <li><a href="/saltobserver/history/">History</a></li>
                     
                 </ul>
             </div>
@@ -128,6 +128,8 @@
 <script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
 
 <script>
+    var SCRIPT_ROOT = "/saltobserver";
+
     $(document).ready(function(){
         $('.nav-menu-button').click(function() {
             $('#nav').toggleClass('active');
