@@ -24,12 +24,12 @@
                 <ul>
                     <li class="pure-menu-heading">Functions</li>
                     {% for id in config.FUNCTION_QUICKLIST %}
-                    <li><a {% if id == active_page %}class="pure-button-active"{% endif %} href="/functions/{{ id|e }}">{{ id|e }}</a></li>
+                    <li><a {% if id == active_page %}class="pure-button-active"{% endif %} href="{{ url_for('functions', function=id|e) }}">{{ id|e }}</a></li>
                     {% endfor %}
                     <li class="pure-menu-heading">Search</li>
-                    {% set search_bar = [ ('Functions', '/functions'), ('Jobs', '/jobs'), ('History', '/history') ] -%}
+                    {% set search_bar = [ ('Functions', 'functionsearch'), ('Jobs', 'jobsearch'), ('History', 'historysearch') ] -%}
                     {% for caption, href in search_bar %}
-                    <li><a href="{{ href }}">{{ caption }}</a></li>
+                    <li><a href="{{ url_for(href) }}">{{ caption }}</a></li>
                     {% endfor %}
                 </ul>
             </div>
@@ -44,6 +44,8 @@
 <script src="{{ url_for('static', filename='jquery-2.1.1.min.js') }}"></script>
 {% endif %}
 <script>
+    var SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+
     $(document).ready(function(){
         $('.nav-menu-button').click(function() {
             $('#nav').toggleClass('active');

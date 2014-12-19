@@ -36,8 +36,8 @@ def jobs(jid):
 
 @app.route('/jobs/')
 def jobsearch():
-    if request.args.get('jobid', None):
-        return redirect(url_for('jobs', jid=request.args.get('jobid')))
+    if request.args.get('jid', None):
+        return redirect(url_for('jobs', jid=request.args.get('jid')))
     return render_template('jobform.html')
 
 @app.route('/history/<minion>/<function>/')
@@ -53,12 +53,12 @@ def history(minion, function):
 
 @app.route('/history/')
 def historysearch():
-    if request.args.get('minionid', None) and request.args.get('function', None):
-        return redirect(url_for('history', minion=request.args.get('minionid'), function=request.args.get('function')))
+    if request.args.get('minion', None) and request.args.get('function', None):
+        return redirect(url_for('history', minion=request.args.get('minion'), function=request.args.get('function')))
     return render_template('historyform.html')
 
 @app.route('/functions/<function>/')
-def function(function):
+def functions(function):
     functions = list()
     times_list = list()
     for minion in redis.sort('minions', alpha=True):
@@ -80,7 +80,7 @@ def functionsearch():
     return render_template('functionform.html')
 
 @app.route('/')
-def functions():
-    return function(app.config['DEFAULT_FUNCTION']) # work around mitsuhiko/werkzeug#382
+def index():
+    return functions(app.config['DEFAULT_FUNCTION']) # work around mitsuhiko/werkzeug#382
     # this would be the proper way to do it
-    #return redirect(url_for('function', function=request.args.get('function', app.config['DEFAULT_FUNCTION'])))
+    #return redirect(url_for('functions', function=request.args.get('function', app.config['DEFAULT_FUNCTION'])))

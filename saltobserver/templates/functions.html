@@ -49,7 +49,7 @@
     <script type=text/javascript>
     {% for (minion, jid, time) in functions %}
         $("#minion-item-{{ minion|replace(".", "\\\\.") }}").click(function() {
-            $.ajax({ url:'/_get_function_data/{{ minion}}/{{ jid }}', success:function(result) {generate_content(result, '{{ time }}'); }});
+            $.ajax({ url:"{{ url_for('get_function_data', minion=minion, jid=jid) }}", success:function(result) {generate_content(result, '{{ time }}'); }});
             $(this).siblings('div').removeClass('minion-item-selected');
             $(this).removeClass('minion-item-new');
             $(this).addClass('minion-item-selected');
@@ -57,16 +57,17 @@
     {% endfor %}
 
     {% if config.USE_LIVEUPDATES %}
-        incoming = new WebSocket("ws://" + location.host + "/subscribe");
+    incoming = new WebSocket("ws://" + location.host + SCRIPT_ROOT + "/subscribe");
         incoming.onopen = function() {
             incoming.send("{{ request.view_args.get('function') }}");
         };
         incoming.onmessage = function (message) {
             var data = JSON.parse(message.data);
-            $('#minion-item-' + data['minion_id'].replace(/\./g, "\\.")).addClass("minion-item-new");
-            $('#minion-item-' + data['minion_id'].replace(/\./g, "\\.")).find('.jid-time').html(data['time']);
+            $("#minion-item-" + data['minion_id'].replace(/\./g, "\\.")).addClass("minion-item-new");
+            $("#minion-item-" + data['minion_id'].replace(/\./g, "\\.")).find('.jid-time').html(data['time']);
+            $("#minion-item-" + data['minion_id'].replace(/\./g, "\\.")).off('click');
             $("#minion-item-" + data['minion_id'].replace(/\./g, "\\.")).click(function() {
-                $.ajax({ url:'/_get_function_data/' + data['minion_id'] + '/' + data['jid'], success:function(result) {generate_content(result, data['time']); }});
+                $.ajax({ url:SCRIPT_ROOT + '/_get_function_data/' + data['minion_id'] + '/' + data['jid'], success:function(result) {generate_content(result, data['time']); }});
                 $(this).siblings('div').removeClass('minion-item-selected');
                 $(this).removeClass('minion-item-new');
                 $(this).addClass('minion-item-selected');

@@ -15,7 +15,7 @@ body {
 }
 </style>
 <div class="pure-u-1 searchpage">
-    <form action="/functions" class="pure-form" method="GET">
+    <form action="{{ url_for('functionsearch') }}" class="pure-form" method="GET">
         <input name="function" type="text" placeholder="Function Name" class="pure-input-rounded">
         <button type="submit" class="pure-button">Search</button>
     </form>
