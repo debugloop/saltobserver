@@ -1,3 +1,14 @@
+"""
+To create a new static mockup, some edits must be made:
+    - in views.py, use the workaround described in index()
+    - in tempates/contentpage.html, uncomment the bit of js for converting JSON
+      (search for a capital JSON in a jinja comment)
+
+After the mockup is created, replace all ajax requests to _get_function_data
+with its onsuccess calls to generate_content with static parameters. Yes, I was
+to lazy to automate this.
+"""
+
 import redis
 import json
 import datetime
