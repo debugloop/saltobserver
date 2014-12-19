@@ -3,7 +3,7 @@
 This is a simple webapp for presenting data as offered by [Salt's Redis
 Returner](https://github.com/saltstack/salt/blob/develop/salt/returners/redis_return.py)
 written in [Flask](http://flask.pocoo.org/). A static demo is available
-[here](http://analogbyte.github.io/saltobserver/)
+[here](http://analogbyte.github.io/saltobserver/).
 
 ![Screenshot of Saltobserver (17-12-2014)](http://files.danieln.de/public/saltobserver.png)
 
