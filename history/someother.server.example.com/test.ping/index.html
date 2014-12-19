@@ -6,12 +6,12 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    
+
     <link rel="stylesheet" href="//yui.yahooapis.com/pure/0.5.0/pure-min.css">
-    
+
     <link rel="stylesheet" href="/saltobserver/static/style.css">
 
-    
+
 </head>
 <body>
 <div id="layout" class="content pure-g">
@@ -21,42 +21,42 @@
             <div class="pure-menu pure-menu-open">
                 <ul>
                     <li class="pure-menu-heading">Functions</li>
-                    
+
                     <li><a  href="/saltobserver/functions/state.highstate/">state.highstate</a></li>
-                    
+
                     <li><a  href="/saltobserver/functions/state.sls/">state.sls</a></li>
-                    
+
                     <li><a  href="/saltobserver/functions/pkg.upgrade/">pkg.upgrade</a></li>
-                    
+
                     <li><a class="pure-button-active" href="/saltobserver/functions/test.ping/">test.ping</a></li>
-                    
+
                     <li class="pure-menu-heading">Search</li>
-                    
+
                     <li><a href="/saltobserver/functions/">Functions</a></li>
-                    
+
                     <li><a href="/saltobserver/jobs/">Jobs</a></li>
-                    
+
                     <li><a href="/saltobserver/history/">History</a></li>
-                    
+
                 </ul>
             </div>
         </div>
     </div>
-    
+
 <div id="list" class="pure-u-1">
-    
+
     <div id="minion-item-20141117175928161514" class="minion-item pure-g">
         <div class="pure-u-3-4">
             <h4 class="minion-name">20141117175928161514</h4>
             <p class="jid-time">2014-11-17, at 17:59:28</p>
         </div>
     </div>
-    
+
 </div>
 
-    
+
 <div id="main" class="pure-u-1">
-    
+
 <div id="default-content" class="centered-content">
     <div class="pure-g">
         <div class="pure-u-1">
@@ -80,7 +80,7 @@
             </div>
 
             <div class="content-controls pure-u-1-3">
-                
+
     <a id="jid-btn" class="pure-button">Go to Job</a>
     <a id="function-btn" class="pure-button-primary pure-button">View Function</a>
 
@@ -134,10 +134,10 @@
     });
 </script>
 
-    
+
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.4.1/jquery.timeago.min.js"></script>
     <script src="//raw.githubusercontent.com/caldwell/renderjson/master/renderjson.js"></script>
-    
+
     <script type=text/javascript>
         renderjson.set_show_to_level(2);
 
@@ -171,15 +171,15 @@
             $('#raw-wrapper').html(renderjson(json));
         }
     </script>
-    
+
     <script type=text/javascript>
-    
+
         $("#minion-item-20141117175928161514").click(function() {
-            $.ajax({ url:"/saltobserver/_get_function_data/someother.server.example.com/20141117175928161514/", success:function(result) {generate_content(result, '2014-11-17, at 17:59:28'); }});
+            generate_content('{"fun_args": [], "jid": "20141117175928161514", "return": true, "retcode": 0, "success": true, "fun": "test.ping", "id": "someother.server.example.com"}', '2014-11-17, at 17:59:28');
             $(this).siblings('div').removeClass('minion-item-selected');
             $(this).addClass('minion-item-selected');
         });
-    
+
     </script>
 
 
