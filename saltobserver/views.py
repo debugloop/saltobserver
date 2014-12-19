@@ -13,7 +13,7 @@ redis = Redis(
         db=app.config['REDIS_DB'],
         password=app.config['REDIS_PASS'])
 
-@app.route('/_get_function_data/<minion>/<jid>/')
+@app.route('/_get_function_data/<minion>/<jid>')
 def get_function_data(minion, jid):
     """AJAX access for loading function/job details."""
     data = redis.get('{0}:{1}'.format(minion, jid))
@@ -81,6 +81,5 @@ def functionsearch():
 
 @app.route('/')
 def index():
-    return functions(app.config['DEFAULT_FUNCTION']) # work around mitsuhiko/werkzeug#382
-    # this would be the proper way to do it
-    #return redirect(url_for('functions', function=request.args.get('function', app.config['DEFAULT_FUNCTION'])))
+    #return functions(app.config['DEFAULT_FUNCTION']) # work around for mitsuhiko/werkzeug#382, if needed
+    return redirect(url_for('functions', function=request.args.get('function', app.config['DEFAULT_FUNCTION'])))
