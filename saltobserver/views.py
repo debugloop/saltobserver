@@ -13,7 +13,7 @@ redis = Redis(
         db=app.config['REDIS_DB'],
         password=app.config['REDIS_PASS'])
 
-@app.route('/_get_function_data/<minion>/<jid>')
+@app.route('/_get_function_data/<minion>/<jid>/')
 def get_function_data(minion, jid):
     """AJAX access for loading function/job details."""
     data = redis.get('{0}:{1}'.format(minion, jid))
