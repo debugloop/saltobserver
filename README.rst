@@ -45,8 +45,9 @@ on so that you can configure gunicorn for use with a proxy server.
 
 A typical deployment could use this command with supervisord:
 
-.. code::
-  export SALTOBSERVER_SETTINGS=/home/saltobserver/config.cfg run_saltobserver --log-file=/var/log/saltobserver/gunicorn.log
+::
+
+  $ export SALTOBSERVER_SETTINGS=/home/saltobserver/config.cfg run_saltobserver --log-file=/var/log/saltobserver/gunicorn.log
 
 Running it from Source
 ~~~~~~~~~~~~~~~~~~~~~~
