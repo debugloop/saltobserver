@@ -10,6 +10,7 @@ Returner`_ written in `Flask`_. A static demo is available `here`_.
 
 .. image:: http://files.danieln.de/public/saltobserver.png
    :alt: Screenshot of Saltobserver (17-12-2014)
+   :width: 1000 px
    :target: http://files.danieln.de/public/saltobserver.png
 
 Features
@@ -29,13 +30,32 @@ Features
 .. _`Redis' Keyspace Notifications`: http://redis.io/topics/notifications
 .. _`renderjson`: https://github.com/caldwell/renderjson
 
-Running it
-~~~~~~~~~~
+Running it from PyPI
+~~~~~~~~~~~~~~~~~~~~
+
+Just install it using ``pip install saltobserver``. As always, it is
+recommended to do so in a virtualenv. After that, the command
+``run_saltobserver`` will be available within this virtualenv. If you want to
+use non-default settings (at least look at the `defaults`_) prefix the command
+with ``export SALTOBSERVER_SETTINGS=/path/to/config``. Other than that, you may
+pass gunicorn options to the ``run_saltobserver`` command, they will be passed
+on so that you can configure gunicorn for use with a proxy server.
+
+.. _`defaults`: https://raw.githubusercontent.com/analogbyte/saltobserver/master/saltobserver/config.py
+
+A typical deployment could use this command with supervisord:
+.. code:: bash
+  export SALTOBSERVER_SETTINGS=/home/saltobserver/config.cfg run_saltobserver --log-file=/var/log/saltobserver/gunicorn.log
+
+Running it from Source
+~~~~~~~~~~~~~~~~~~~~~~
 
 If your minions return their data to some Redis instance, it is as
-simple as running ``./run.sh`` (and putting that behind a reverse proxy,
-if needed). This uses `Gunicorn <http://gunicorn.org/>`__, which is
-pretty flexible and can be configured for pretty much any setup.
+simple as cloning this repo running ``scripts/run_saltobserver`` (and putting
+that behind a reverse proxy, if needed). This uses `Gunicorn`_, which is pretty
+flexible and can be configured for pretty much any setup.
+
+.. _`Gunicorn`: http://gunicorn.org/
 
 Note that your Redis instance has to have a version greater than v2.8.0
 for the live updates to work.
