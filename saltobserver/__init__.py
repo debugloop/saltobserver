@@ -5,6 +5,7 @@ app.config.from_object('saltobserver.config')
 try:
     app.config.from_envvar('SALTOBSERVER_SETTINGS')
 except RuntimeError:
+    app.logger.warning("No custom settings available. Point $SALTOBSERVER_SETTINGS to your configuration file.")
     print "No custom settings found! Point $SALTOBSERVER_SETTINGS to your configuration file."
     print "You might want to base them on the defaults:"
     print "  wget https://raw.githubusercontent.com/analogbyte/saltobserver/master/saltobserver/config.py"
@@ -20,6 +21,20 @@ file_handler.setFormatter(Formatter(
     ))
 app.logger.addHandler(file_handler)
 app.logger.setLevel(logging.DEBUG)
+
+from redis import Redis
+from redis.exceptions import ConnectionError
+redis = Redis(
+        host=app.config['REDIS_HOST'],
+        port=app.config['REDIS_PORT'],
+        db=app.config['REDIS_DB'],
+        password=app.config['REDIS_PASS'])
+try:
+    redis.ping()
+except ConnectionError:
+    app.logger.error("Unable to connect to Redis at %s:%s" % (app.config['REDIS_HOST'], app.config['REDIS_PORT']))
+    print "Unable to connect to Redis at %s:%s" % (app.config['REDIS_HOST'], app.config['REDIS_PORT'])
+    raise ConnectionError
 
 if app.config['USE_LIVEUPDATES']:
     from saltobserver.redis_stream import RedisStream

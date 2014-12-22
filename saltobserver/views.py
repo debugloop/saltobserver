@@ -1,17 +1,10 @@
-from saltobserver import app
+from saltobserver import app, redis
 
 from flask import Response
 from flask import render_template, redirect, url_for, request
 
 import json
 import time
-
-from redis import Redis
-redis = Redis(
-        host=app.config['REDIS_HOST'],
-        port=app.config['REDIS_PORT'],
-        db=app.config['REDIS_DB'],
-        password=app.config['REDIS_PASS'])
 
 @app.route('/_get_function_data/<minion>/<jid>/')
 def get_function_data(minion, jid):
