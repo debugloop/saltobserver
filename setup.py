@@ -1,0 +1,39 @@
+# -*- coding: utf-8 -*-
+import codecs
+from os import path
+
+from setuptools import setup
+
+def read(fname):
+    return codecs.open(path.join(path.dirname(__file__), fname)).read()
+
+setup(
+    name='saltobserver',
+    version='0.9',
+    description='A simple webapp for presenting data as offered by SaltStack\'s Redis Returner',
+    long_description=read('README.rst'),
+    url='https://github.com/analogbyte/saltobserver',
+    author='Daniel Nägele',
+    author_email='saltobserver@danieln.de',
+    license='MIT',
+    classifiers=[
+        'Development Status :: 4 - Beta',
+        'Intended Audience :: Developers',
+        'Intended Audience :: System Administrators',
+        'Framework :: Flask',
+        'License :: OSI Approved :: MIT License',
+        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 2.6',
+        'Programming Language :: Python :: 2.7',
+    ],
+    keywords='saltstack redis returner salt states',
+    packages=['saltobserver'],
+
+    install_requires=['flask', 'flask_sockets', 'gunicorn', 'redis'],
+
+    extras_require = {
+        'dev': [],
+        'test': [],
+    },
+    scripts = ['scripts/run_saltobserver'],
+)
