@@ -8,7 +8,7 @@ Returner`_ written in `Flask`_. A static demo is available `here`_.
 .. _`Flask`: http://flask.pocoo.org/
 .. _`here`: http://analogbyte.github.io/saltobserver/
 
-.. image:: http://files.danieln.de/public/saltobserver.png
+.. image:: http://files.danieln.de/public/saltobserver-v0.9.0.png
    :alt: Screenshot of Saltobserver (17-12-2014)
    :width: 1000 px
    :target: http://files.danieln.de/public/saltobserver.png
