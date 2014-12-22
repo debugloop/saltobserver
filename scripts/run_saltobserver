@@ -1,0 +1,2 @@
+#!/bin/bash
+gunicorn --log-file=logs/gunicorn.log -k flask_sockets.worker $@ saltobserver:app
