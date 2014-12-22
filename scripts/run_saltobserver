@@ -1,3 +1,3 @@
 #!/bin/bash
 mkdir logs
-gunicorn --log-file=logs/gunicorn.log -k flask_sockets.worker $@ saltobserver:app
+gunicorn --log-file=logs/saltobserver_gunicorn.log -k flask_sockets.worker $@ saltobserver:app
