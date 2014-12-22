@@ -2,6 +2,7 @@ from flask import Flask
 
 app = Flask(__name__)
 app.config.from_object('saltobserver.config')
+app.config.from_envvar('SALTOBSERVER_SETTINGS')
 
 import logging
 from logging import Formatter
