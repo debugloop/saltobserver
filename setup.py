@@ -4,18 +4,19 @@ from os import path
 
 from setuptools import setup
 
-def read(fname):
-    return codecs.open(path.join(path.dirname(__file__), fname)).read()
+with open('README.rst', 'rt') as f:
+    long_description = f.read()
 
 setup(
     name='saltobserver',
     version='0.9',
     description='A simple webapp for presenting data as offered by SaltStack\'s Redis Returner',
-    long_description=read('README.rst'),
+    long_description=long_description,
     url='https://github.com/analogbyte/saltobserver',
     author='Daniel Nägele',
     author_email='saltobserver@danieln.de',
     license='MIT',
+    zip_safe=False,
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
@@ -28,12 +29,12 @@ setup(
     ],
     keywords='saltstack redis returner salt states',
     packages=['saltobserver'],
-
+    package_data={
+        'saltobserver': [
+            'templates/*.html',
+            'static/style.css',
+            ]
+        },
     install_requires=['flask', 'flask_sockets', 'gunicorn', 'redis'],
-
-    extras_require = {
-        'dev': [],
-        'test': [],
-    },
     scripts = ['scripts/run_saltobserver'],
 )
