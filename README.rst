@@ -23,11 +23,10 @@ Features
     * a job view listing all minions which ran a specific job
 - a customizable navbar, which links to function views
 - searchpages for everything
-- live updates for the function view using websockets and `Redis' Keyspace
-  Notifications`_
+- live updates for the function view using websockets and `Redis' Keyspace Notifications`_
 - a collapsible representation of raw job data using the awesome `renderjson`_
 
-.. _`Redis Keyspace Notifications`: http://redis.io/topics/notifications
+.. _`Redis' Keyspace Notifications`: http://redis.io/topics/notifications
 .. _`renderjson`: https://github.com/caldwell/renderjson
 
 Running it
