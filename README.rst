@@ -2,7 +2,9 @@ Salt Observer
 =============
 
 This is a simple webapp for presenting data as offered by `Salt's Redis
-Returner`_ written in `Flask`_. A static demo is available `here`_.
+Returner`_ written in `Flask`_.
+
+A static demo is available `here`_.
 
 .. _`Salt's Redis Returner`: https://github.com/saltstack/salt/blob/develop/salt/returners/redis_return.py
 .. _`Flask`: http://flask.pocoo.org/
@@ -16,7 +18,8 @@ Returner`_ written in `Flask`_. A static demo is available `here`_.
 Features
 ~~~~~~~~
 
-- a simple and responsive interface
+- a simple and responsive interface based on `purecss`_ (and their example
+  `email layout`_ to be exact)
 - three main views:
     * a function view showing all minions that ran a particular function (as
       shown on the screenshot)
@@ -27,6 +30,8 @@ Features
 - live updates for the function view using websockets and `Redis' Keyspace Notifications`_
 - a collapsible representation of raw job data using the awesome `renderjson`_
 
+.. _`purecss`: http://purecss.io/
+.. _`email layout`: http://purecss.io/layouts/email/
 .. _`Redis' Keyspace Notifications`: http://redis.io/topics/notifications
 .. _`renderjson`: https://github.com/caldwell/renderjson
 
