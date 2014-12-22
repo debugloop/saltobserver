@@ -44,6 +44,7 @@ on so that you can configure gunicorn for use with a proxy server.
 .. _`defaults`: https://raw.githubusercontent.com/analogbyte/saltobserver/master/saltobserver/config.py
 
 A typical deployment could use this command with supervisord:
+
 .. code:: bash
   export SALTOBSERVER_SETTINGS=/home/saltobserver/config.cfg run_saltobserver --log-file=/var/log/saltobserver/gunicorn.log
 
