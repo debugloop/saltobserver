@@ -5,7 +5,6 @@ app.config.from_object('saltobserver.config')
 try:
     app.config.from_envvar('SALTOBSERVER_SETTINGS')
 except RuntimeError:
-    app.logger.warning("No custom settings available. Point $SALTOBSERVER_SETTINGS to your configuration file.")
     print "No custom settings found! Point $SALTOBSERVER_SETTINGS to your configuration file."
     print "You might want to base them on the defaults:"
     print "  wget https://raw.githubusercontent.com/analogbyte/saltobserver/master/saltobserver/config.py"
