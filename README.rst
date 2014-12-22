@@ -47,7 +47,7 @@ A typical deployment could use this command with supervisord:
 
 ::
 
-  $ export SALTOBSERVER_SETTINGS=/home/saltobserver/config.cfg run_saltobserver --log-file=/var/log/saltobserver/gunicorn.log
+  $ export SALTOBSERVER_SETTINGS=/home/saltobserver/config.cfg run_saltobserver -u saltobserver -g saltobserver --bind unix:/var/run/saltobserver/saltobserver.sock --workers 4
 
 Running it from Source
 ~~~~~~~~~~~~~~~~~~~~~~
