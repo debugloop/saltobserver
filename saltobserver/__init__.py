@@ -2,7 +2,12 @@ from flask import Flask
 
 app = Flask(__name__)
 app.config.from_object('saltobserver.config')
-app.config.from_envvar('SALTOBSERVER_SETTINGS')
+try:
+    app.config.from_envvar('SALTOBSERVER_SETTINGS')
+except RuntimeError:
+    print "No custom settings found! Point $SALTOBSERVER_SETTINGS to your configuration file."
+    print "You might want to base them on the defaults:"
+    print "  wget https://raw.githubusercontent.com/analogbyte/saltobserver/master/saltobserver/config.py"
 
 import logging
 from logging import Formatter
