@@ -21,13 +21,14 @@ file_handler.setFormatter(Formatter(
 app.logger.addHandler(file_handler)
 app.logger.setLevel(logging.DEBUG)
 
-from redis import Redis
+from redis import Redis, ConnectionPool
 from redis.exceptions import ConnectionError
-redis = Redis(
+redis_pool = ConnectionPool(
         host=app.config['REDIS_HOST'],
         port=app.config['REDIS_PORT'],
         db=app.config['REDIS_DB'],
         password=app.config['REDIS_PASS'])
+redis = Redis(connection_pool=redis_pool)
 try:
     redis.ping()
 except ConnectionError:

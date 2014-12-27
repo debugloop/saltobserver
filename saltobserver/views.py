@@ -1,7 +1,9 @@
-from saltobserver import app, redis
+from saltobserver import app, redis_pool
 
 from flask import Response
 from flask import render_template, redirect, url_for, request
+
+from redis import Redis
 
 import json
 import time
@@ -9,12 +11,14 @@ import time
 @app.route('/_get_function_data/<minion>/<jid>/')
 def get_function_data(minion, jid):
     """AJAX access for loading function/job details."""
+    redis = Redis(connection_pool=redis_pool)
     data = redis.get('{0}:{1}'.format(minion, jid))
     return Response(response=data, status=200, mimetype="application/json")
 
 @app.route('/jobs/<jid>/')
 def jobs(jid):
     ret = list()
+    redis = Redis(connection_pool=redis_pool)
     for minion in redis.keys('*:%s' % jid):
         ret.append(minion.split(':')[0])
     # TODO: this following line is just for the navigation-bar highlight. make
@@ -36,6 +40,7 @@ def jobsearch():
 @app.route('/history/<minion>/<function>/')
 def history(minion, function):
     ret = list()
+    redis = Redis(connection_pool=redis_pool)
     try:
         for jid in redis.lrange('{0}:{1}'.format(minion, function), 0, -1):
             timestamp = time.strptime(jid, "%Y%m%d%H%M%S%f")
@@ -54,6 +59,7 @@ def historysearch():
 def functions(function):
     functions = list()
     times_list = list()
+    redis = Redis(connection_pool=redis_pool)
     for minion in redis.sort('minions', alpha=True):
         try:
             jid = redis.lindex('{0}:{1}'.format(minion, function), 0)

@@ -1,4 +1,4 @@
-from saltobserver import app
+from saltobserver import app, redis_pool
 import gevent
 
 from redis import Redis
@@ -8,12 +8,9 @@ import json
 import time
 
 class RedisStream(object):
+
     def __init__(self):
-        self.redis = Redis(
-                host=app.config['REDIS_HOST'],
-                port=app.config['REDIS_PORT'],
-                db=app.config['REDIS_DB'],
-                password=app.config['REDIS_PASS'])
+        self.redis = Redis(connection_pool=redis_pool)
         actual_version = StrictVersion(self.redis.info()['redis_version'])
         minimum_version = StrictVersion("2.8.0")
         if actual_version < minimum_version:
