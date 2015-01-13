@@ -9,7 +9,7 @@ with open('README.rst', 'rt') as f:
 
 setup(
     name='saltobserver',
-    version='0.9.1',
+    version='0.9.2',
     description='A simple webapp for presenting data as offered by SaltStack\'s Redis Returner',
     long_description=long_description,
     url='https://github.com/analogbyte/saltobserver',
