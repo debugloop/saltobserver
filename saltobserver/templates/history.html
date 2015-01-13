@@ -4,8 +4,8 @@
 
 {% block list %}
 <div id="list" class="pure-u-1">
-    {% for (jid, time) in jids %}
-    <div id="minion-item-{{ jid }}" class="minion-item pure-g">
+    {% for (jid, success, time) in jids %}
+    <div id="minion-item-{{ jid }}" class="minion-item pure-g {% if not success %}minion-item-alert{% endif %}">
         <div class="pure-u-3-4">
             <h4 class="minion-name">{{ jid }}</h4>
             <p class="jid-time">{{ time }}</p>
@@ -37,7 +37,7 @@
 
 {% block morescripts %}
     <script type=text/javascript>
-    {% for (jid, time) in jids %}
+    {% for (jid, success, time) in jids %}
         $("#minion-item-{{ jid }}").click(function() {
             $.ajax({ url:"{{ url_for('get_function_data', minion=request.view_args.get('minion'), jid=jid) }}", success:function(result) {generate_content(result, '{{ time }}'); }});
             $(this).siblings('div').removeClass('minion-item-selected');

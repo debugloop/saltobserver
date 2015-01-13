@@ -4,8 +4,8 @@
 
 {% block list %}
 <div id="list" class="pure-u-1">
-    {% for minion in minions %}
-    <div id="minion-item-{{ minion }}" class="minion-item pure-g">
+    {% for minion, success in minions %}
+    <div id="minion-item-{{ minion }}" class="minion-item pure-g {% if not success %}minion-item-alert{% endif %}">
         <div class="pure-u-3-4">
             <h4 class="minion-name">{{ minion }}</h4>
         </div>
@@ -35,7 +35,7 @@
 
 {% block morescripts %}
     <script type=text/javascript>
-    {% for minion in minions %}
+    {% for minion, success in minions %}
         $("#minion-item-{{ minion|replace(".", "\\\\.") }}").click(function() {
             $.ajax({ url:"{{ url_for('get_function_data', minion=minion, jid=request.view_args.get('jid')) }}", success:function(result) {generate_content(result, '{{ time }}'); }});
             $(this).siblings('div').removeClass('minion-item-selected');

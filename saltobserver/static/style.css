@@ -82,6 +82,9 @@ a {
 .minion-item-new {
     border-left: 6px solid #1b98f8;
 }
+.minion-item-alert {
+    border-right: 6px solid #c5480d;
+}
 
 /*
  * Layout for Phones and up

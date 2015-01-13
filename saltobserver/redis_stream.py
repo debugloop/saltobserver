@@ -27,8 +27,9 @@ class RedisStream(object):
                 minion_id = message['channel'].split(':')[1]
                 function = message['channel'].split(':')[2]
                 jid = self.redis.lindex('{0}:{1}'.format(minion_id, function), 0)
+                success = True if json.loads(self.redis.get('{0}:{1}'.format(minion_id, jid))).get('retcode') == 0 else False
                 timestamp = time.strptime(jid, "%Y%m%d%H%M%S%f")
-                yield dict(minion_id=minion_id, function=function, jid=jid, time=time.strftime('%Y-%m-%d, at %H:%M:%S', timestamp))
+                yield dict(minion_id=minion_id, function=function, jid=jid, success=success, time=time.strftime('%Y-%m-%d, at %H:%M:%S', timestamp))
 
     def register(self, client, function):
         self.clients.append((client, function))

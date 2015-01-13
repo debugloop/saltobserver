@@ -4,8 +4,8 @@
 
 {% block list %}
 <div id="list" class="pure-u-1">
-   {% for (minion, jid, time) in functions %}
-    <div id="minion-item-{{ minion }}" class="minion-item pure-g">
+   {% for (minion, jid, success, time) in functions %}
+    <div id="minion-item-{{ minion }}" class="minion-item pure-g {% if not success %}minion-item-alert{% endif %}">
         <div class="pure-u-3-4">
             <h4 class="minion-name">{{ minion }}</h4>
             <p class="jid-time">{{ time }}</p>
@@ -47,7 +47,7 @@
 
 {% block morescripts %}
     <script type=text/javascript>
-    {% for (minion, jid, time) in functions %}
+    {% for (minion, jid, success, time) in functions %}
         $("#minion-item-{{ minion|replace(".", "\\\\.") }}").click(function() {
             $.ajax({ url:"{{ url_for('get_function_data', minion=minion, jid=jid) }}", success:function(result) {generate_content(result, '{{ time }}'); }});
             $(this).siblings('div').removeClass('minion-item-selected');
@@ -63,6 +63,12 @@
         };
         incoming.onmessage = function (message) {
             var data = JSON.parse(message.data);
+            $("#minion-item-" + data['minion_id'].replace(/\./g, "\\.")).addClass("minion-item-new");
+            if(data['success']) {
+                $("#minion-item-" + data['minion_id'].replace(/\./g, "\\.")).removeClass("minion-item-alert");
+            } else {
+                $("#minion-item-" + data['minion_id'].replace(/\./g, "\\.")).addClass("minion-item-alert");
+            }
             $("#minion-item-" + data['minion_id'].replace(/\./g, "\\.")).addClass("minion-item-new");
             $("#minion-item-" + data['minion_id'].replace(/\./g, "\\.")).find('.jid-time').html(data['time']);
             $("#minion-item-" + data['minion_id'].replace(/\./g, "\\.")).off('click');

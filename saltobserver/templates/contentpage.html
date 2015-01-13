@@ -83,12 +83,13 @@
             }catch(e){
                 $('#number').html('1');
             }
-            if (json.success) {
-                $('#success').html("&#x2713;");
-                $('#return-code').parent().hide();
-            } else {
+            if (json.retcode != 0) {
                 $('#success').html("&#x2717;");
                 $('#return-code').html(json.retcode);
+                $('#return-code').parent().show();
+            } else {
+                $('#success').html("&#x2713;");
+                $('#return-code').parent().hide();
             }
 
             $('#raw-wrapper').html(renderjson(json));

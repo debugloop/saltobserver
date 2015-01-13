@@ -20,10 +20,11 @@ def jobs(jid):
     ret = list()
     redis = Redis(connection_pool=redis_pool)
     for minion in redis.keys('*:%s' % jid):
-        ret.append(minion.split(':')[0])
-    # TODO: this following line is just for the navigation-bar highlight. make
-    # it less ugly?
-    function = json.loads(redis.get('{0}:{1}'.format(ret[0], jid)))['fun']
+        data = json.loads(redis.get(minion))
+        success = True if data.get('retcode') == 0 else False
+        ret.append((minion.split(':')[0], success))
+    else:
+        function = data.get('fun')
     try:
         timestamp = time.strptime(jid, "%Y%m%d%H%M%S%f")
         at_time = time.strftime('%Y-%m-%d, at %H:%M:%S', timestamp)
@@ -44,7 +45,8 @@ def history(minion, function):
     try:
         for jid in redis.lrange('{0}:{1}'.format(minion, function), 0, -1):
             timestamp = time.strptime(jid, "%Y%m%d%H%M%S%f")
-            ret.append((jid, time.strftime('%Y-%m-%d, at %H:%M:%S', timestamp)))
+            success = True if json.loads(redis.get('{0}:{1}'.format(minion, jid))).get('retcode') == 0 else False
+            ret.append((jid, success, time.strftime('%Y-%m-%d, at %H:%M:%S', timestamp)))
     except Exception:
         pass
     return render_template('history.html', jids=ret)
@@ -64,10 +66,11 @@ def functions(function):
         try:
             jid = redis.lindex('{0}:{1}'.format(minion, function), 0)
             times_run = redis.llen('{0}:{1}'.format(minion, function))
+            success = True if json.loads(redis.get('{0}:{1}'.format(minion, jid))).get('retcode') == 0 else False
             if times_run > 0:
                 times_list.append(times_run)
             timestamp = time.strptime(jid, "%Y%m%d%H%M%S%f")
-            functions.append((minion, jid, time.strftime('%Y-%m-%d, at %H:%M:%S', timestamp)))
+            functions.append((minion, jid, success, time.strftime('%Y-%m-%d, at %H:%M:%S', timestamp)))
         except Exception:
             continue
     return render_template('functions.html', functions=functions, average_run=float(sum(times_list))/len(times_list) if len(times_list) > 0 else 0)
