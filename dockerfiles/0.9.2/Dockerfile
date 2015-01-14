@@ -16,7 +16,7 @@ EXPOSE 8000
 
 RUN pip install saltobserver==0.9.2
 
-ADD saltobserver/config.py /saltobserver_config.py
-ENV SALTOBSERVER_SETTINGS /saltobserver_config.py
+ADD config.py /config.py
+ENV SALTOBSERVER_SETTINGS /config.py
 
 CMD run_saltobserver -b 0.0.0.0:8000
