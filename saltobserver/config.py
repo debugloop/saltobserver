@@ -1,6 +1,8 @@
+import os
+
 DEBUG = False
 
-LOG_FILE = 'logs/app.log'
+LOG_FILE = os.getenv('LOG_FILE', 'logs/app.log')
 
 # If set to false, flask's url handling will be used for external libraries.
 # The static directory contains a script to download all dependencies.
@@ -12,8 +14,6 @@ USE_LIVEUPDATES = True
 FUNCTION_QUICKLIST = ['state.highstate', 'state.sls', 'pkg.upgrade', 'test.ping']
 # the default redirect when visiting /
 DEFAULT_FUNCTION = 'state.highstate'
-
-import os
 
 REDIS_HOST = os.getenv('REDIS_HOST', 'localhost')
 REDIS_PORT = int(os.getenv('REDIS_PORT', 6379))
