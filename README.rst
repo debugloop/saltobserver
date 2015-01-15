@@ -76,7 +76,9 @@ Install a recent docker version (at least 1.2) and run
 
 ::
 
-  docker pull asmaps/saltobserver
-  docker run -d --restart=always --name=saltobserver -p 8000:8000 -e REDIS_HOST=redis.example.org asmaps/saltobserver
+  git clone https://github.com/analogbyte/saltobserver.git
+  cd saltobserver
+  docker build -t saltobserver .
+  docker run -d --restart=always --name=saltobserver -p 8000:8000 -e REDIS_HOST=redis.example.org saltobserver
 
 This exposes saltobserver to port 8000 and it tries to connect to redis.example.org as redis host. Change the env var and use docker links as suits your needs.
