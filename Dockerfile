@@ -16,7 +16,11 @@ ADD . /opt/code
 WORKDIR /opt/code
 RUN pip install .
 
+WORKDIR /opt/code/saltobserver/static
+RUN ./get_dependencies.sh
+
 ENV SALTOBSERVER_SETTINGS /opt/code/saltobserver/config.py
+ENV SALTOBSERVER_USE_CDN 0
 ENV LOG_FILE /log/app.log
 
 VOLUME /log
