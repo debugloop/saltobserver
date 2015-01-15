@@ -35,6 +35,6 @@ setup(
             'static/style.css',
             ]
         },
-    install_requires=['flask', 'flask_sockets', 'gunicorn', 'redis'],
+    install_requires=['flask', 'flask_sockets', 'gunicorn', 'redis', 'gevent', 'gevent-websocket'],
     scripts = ['scripts/run_saltobserver'],
 )
