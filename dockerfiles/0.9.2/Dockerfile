@@ -1,5 +1,5 @@
 FROM ubuntu:14.10
-MAINTAINER Aexea Carpentry
+MAINTAINER Saltobserver Maintainers <https://www.github.com/danieljn/saltobserver/>
 
 ENV DEBIAN_FRONTEND noninteractive
 
