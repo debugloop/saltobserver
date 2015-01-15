@@ -1,3 +1,9 @@
 #!/bin/bash
-mkdir logs
+mkdir -p logs # this might by unnecessary depending on your logging configuration
+
+# The following command can also be used standalone, although this script
+# passes all arguments to Gunicorn. Most commonly, this is used to overwrite
+# the log-file parameter.
+# When calling Gunicorn from your own script and using Supervisord, be sure to
+# use exec so you can stop and restart your Saltobserver instance.
 exec gunicorn --log-file=logs/saltobserver_gunicorn.log -k flask_sockets.worker $@ saltobserver:app

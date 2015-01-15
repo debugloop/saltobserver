@@ -2,3 +2,6 @@ flask
 flask_sockets
 gunicorn
 redis
+# required by flask_sockets, but used here too...
+gevent
+gevent-websocket
