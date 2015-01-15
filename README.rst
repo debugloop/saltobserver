@@ -68,3 +68,17 @@ Note that your Redis instance has to have a version greater than v2.8.0
 for the live updates to work.
 
 Also look at the configuration in ``saltobserver/config.py``.
+
+Running it with docker
+~~~~~~~~~~~~~~~~~~~~~~
+
+Install a recent docker version (at least 1.2) and run
+
+::
+
+  git clone https://github.com/analogbyte/saltobserver.git
+  cd saltobserver
+  docker build -t saltobserver .
+  docker run -d --restart=always --name=saltobserver -p 8000:8000 -e REDIS_HOST=redis.example.org saltobserver
+
+This exposes saltobserver to port 8000 and it tries to connect to redis.example.org as redis host. Change the env var and use docker links as suits your needs.
