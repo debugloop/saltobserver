@@ -6,7 +6,7 @@ LOG_FILE = os.getenv('LOG_FILE', 'logs/app.log')
 
 # If set to false, flask's url handling will be used for external libraries.
 # The static directory contains a script to download all dependencies.
-USE_CDN = bool(os.getenv('SALTOBSERVER_USE_CDN', True))
+USE_CDN = bool(int(os.getenv('SALTOBSERVER_USE_CDN', 1)))
 # If set to false, no liveupdates, no websockets
 USE_LIVEUPDATES = True
 

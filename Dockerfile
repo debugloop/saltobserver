@@ -18,6 +18,7 @@ RUN pip install .
 
 WORKDIR /opt/code/saltobserver/static
 RUN ./get_dependencies.sh
+WORKDIR /opt/code
 
 ENV SALTOBSERVER_SETTINGS /opt/code/saltobserver/config.py
 ENV SALTOBSERVER_USE_CDN 0
