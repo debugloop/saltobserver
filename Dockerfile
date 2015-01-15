@@ -22,4 +22,4 @@ ENV LOG_FILE /log/app.log
 VOLUME /log
 EXPOSE 8000
 
-CMD run_saltobserver -b 0.0.0.0:8000
+CMD gunicorn --log-file=/log/saltobserver_gunicorn.log -k flask_sockets.worker -b 0.0.0.0:8000 saltobserver:app
