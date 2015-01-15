@@ -1,5 +1,5 @@
 FROM ubuntu:14.10
-MAINTAINER Saltobserver Maintainers <https://www.github.com/danieljn/saltobserver/>
+MAINTAINER Saltobserver Maintainers <https://www.github.com/analogbyte/saltobserver/>
 
 ENV DEBIAN_FRONTEND noninteractive
 
