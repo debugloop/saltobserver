@@ -19,6 +19,8 @@ authors:
 	@echo "https://github.com/analogbyte/saltobserver/graphs/contributors" >> AUTHORS
 
 clean:
-	@rm -rf saltobserver.egg-info/
-	@rm -rf dist/
-	@rm -rf logs/
+	rm -rf saltobserver.egg-info/
+	rm -rf dist/
+	rm -f *.log
+	rm -f *.pyc
+	rm -f saltobserver/*.pyc
