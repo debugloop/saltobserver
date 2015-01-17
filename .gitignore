@@ -55,3 +55,6 @@ target/
 
 # Static Demo Builds
 scripts/frozen/
+
+# Redis Dumps
+dump.rdb
