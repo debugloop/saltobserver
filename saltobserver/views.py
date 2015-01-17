@@ -19,12 +19,13 @@ def get_function_data(minion, jid):
 def jobs(jid):
     ret = list()
     redis = Redis(connection_pool=redis_pool)
+    data = None
     for minion in redis.keys('*:%s' % jid):
         data = json.loads(redis.get(minion))
         success = True if data.get('retcode') == 0 else False
         ret.append((minion.split(':')[0], success))
     else:
-        function = data.get('fun')
+        function = data.get('fun', 'invalid_data_in_redis') if data else 'none'
     try:
         timestamp = time.strptime(jid, "%Y%m%d%H%M%S%f")
         at_time = time.strftime('%Y-%m-%d, at %H:%M:%S', timestamp)
