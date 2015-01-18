@@ -21,9 +21,11 @@ authors:
 clean:
 	rm -rf saltobserver.egg-info/
 	rm -rf dist/
+	rm -f dump.rdb
 	rm -f *.log
 	rm -f *.pyc
 	rm -f saltobserver/*.pyc
+	rm -f scripts/*.pyc
 
 test:
 	nosetests --with-coverage --cover-package=saltobserver
