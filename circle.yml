@@ -1,6 +1,7 @@
 general:
   artifacts:
     - "test_report.txt"
+    - "saltobserver_app.log"
 
 machine:
   environment:
