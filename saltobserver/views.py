@@ -73,11 +73,11 @@ def functions(function):
     for minion in redis.sort('minions', alpha=True):
         try:
             jid = redis.lindex('{0}:{1}'.format(minion, function), 0)
+            timestamp = time.strptime(jid, "%Y%m%d%H%M%S%f")
             times_run = redis.llen('{0}:{1}'.format(minion, function))
             success = True if json.loads(redis.get('{0}:{1}'.format(minion, jid))).get('retcode') == 0 else False
             if times_run > 0:
                 times_list.append(times_run)
-            timestamp = time.strptime(jid, "%Y%m%d%H%M%S%f")
             functions.append((minion, jid, success, time.strftime('%Y-%m-%d, at %H:%M:%S', timestamp)))
         except Exception:
             continue

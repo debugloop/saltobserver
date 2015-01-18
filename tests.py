@@ -67,7 +67,6 @@ class SaltobserverTestCase(unittest.TestCase):
 
     def test_count_function(self):
         self.rdg.generate(fun="state.highstate")
-        self.rdg.generate(fun="test.ping")
         rv = self.app.get('/functions/state.highstate/')
         assert '''<h1>2</h1>
                 <div class="count-title">
@@ -83,18 +82,32 @@ class SaltobserverTestCase(unittest.TestCase):
                 <div class="count-title">
                     ...times on average.
                 </div>''' in rv.data
+        # cover the case where a jid is omitted because it's no valid timestamp
+        self.rdg.generate(jid="1234", fun="state.highstate")
+        rv = self.app.get('/functions/state.highstate/')
+        print rv.data
+        assert '''<h1>0.0</h1>
+                <div class="count-title">
+                    ...times on average.
+                </div>''' in rv.data
 
     def test_count_job(self):
-        self.rdg.generate(jid="12345", fun="state.highstate")
-        self.rdg.generate(jid="12346", fun="test.ping")
-        rv = self.app.get('/jobs/12345/')
+        self.rdg.generate(jid="20150118142103074916", fun="state.highstate")
+        rv = self.app.get('/jobs/20150118142103074916/')
         assert '''<h1>2</h1>
                 <div class="count-title">
                     Minions have run this job.
                 </div>''' in rv.data
-        ReturnDataGenerator(redis=Redis(connection_pool=saltobserver.redis_pool), minion_list=["onemore.minion.example.com"]).generate(jid="12345", fun="state.highstate")
-        rv = self.app.get('/jobs/12345/')
+        ReturnDataGenerator(redis=Redis(connection_pool=saltobserver.redis_pool), minion_list=["onemore.minion.example.com"]).generate(jid="20150118142103074916", fun="state.highstate")
+        rv = self.app.get('/jobs/20150118142103074916/')
         assert '''<h1>3</h1>
+                <div class="count-title">
+                    Minions have run this job.
+                </div>''' in rv.data
+        # cover the case where the jid does not parse as a timestamp
+        self.rdg.generate(jid="12347", fun="test.ping")
+        rv = self.app.get('/jobs/12347/')
+        assert '''<h1>2</h1>
                 <div class="count-title">
                     Minions have run this job.
                 </div>''' in rv.data
