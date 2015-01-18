@@ -43,14 +43,14 @@ def jobsearch():
 def history(minion, function):
     ret = list()
     redis = Redis(connection_pool=redis_pool)
-    try:
-        for jid in redis.lrange('{0}:{1}'.format(minion, function), 0, -1):
+    for jid in redis.lrange('{0}:{1}'.format(minion, function), 0, -1):
+        try:
             timestamp = time.strptime(jid, "%Y%m%d%H%M%S%f")
             success = True if json.loads(redis.get('{0}:{1}'.format(minion, jid))).get('retcode') == 0 else False
             ret.append((jid, success, time.strftime('%Y-%m-%d, at %H:%M:%S', timestamp)))
-    except ValueError: # from either time.strptime or json.loads
-        # should never occur when dealing with real data
-        pass
+        except ValueError: # from either time.strptime or json.loads
+            # should never occur when dealing with real data
+            pass
     return render_template('history.html', jids=ret)
 
 @app.route('/history/')
