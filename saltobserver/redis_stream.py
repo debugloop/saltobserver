@@ -11,6 +11,7 @@ class RedisStream(object):
 
     def __init__(self):
         self.redis = Redis(connection_pool=redis_pool)
+        app.logger.debug("Using Redis version %s." % self.redis.info()['redis_version'])
         actual_version = StrictVersion(self.redis.info()['redis_version'])
         minimum_version = StrictVersion("2.8.0")
         if actual_version < minimum_version:
