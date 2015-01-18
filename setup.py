@@ -33,8 +33,8 @@ setup(
         'saltobserver': [
             'templates/*.html',
             'static/style.css',
-            ]
-        },
+        ]
+    },
     install_requires=['flask', 'flask_sockets', 'gunicorn', 'redis', 'gevent', 'gevent-websocket'],
-    scripts = ['scripts/run_saltobserver'],
+    scripts=['scripts/run_saltobserver'],
 )

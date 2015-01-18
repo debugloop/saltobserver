@@ -17,17 +17,18 @@ file_handler = RotatingFileHandler(app.config['LOG_FILE'])
 file_handler.setFormatter(Formatter(
     '%(asctime)s %(levelname)s: %(message)s '
     '[in %(pathname)s:%(lineno)d]'
-    ))
+))
 app.logger.addHandler(file_handler)
 app.logger.setLevel(logging.DEBUG)
 
 from redis import Redis, ConnectionPool
 from redis.exceptions import ConnectionError
 redis_pool = ConnectionPool(
-        host=app.config['REDIS_HOST'],
-        port=app.config['REDIS_PORT'],
-        db=app.config['REDIS_DB'],
-        password=app.config['REDIS_PASS'])
+    host=app.config['REDIS_HOST'],
+    port=app.config['REDIS_PORT'],
+    db=app.config['REDIS_DB'],
+    password=app.config['REDIS_PASS']
+)
 redis = Redis(connection_pool=redis_pool)
 try:
     redis.ping()
@@ -42,7 +43,7 @@ if app.config['USE_LIVEUPDATES']:
         stream = RedisStream()
         stream.start()
     except NotImplementedError:
-        app.config['USE_LIVEUPDATES'] = False # override configuration
+        app.config['USE_LIVEUPDATES'] = False  # override configuration
         app.logger.error("Live updates not available, Redis version not sufficient (minimum is v2.8).")
 
 import saltobserver.filters

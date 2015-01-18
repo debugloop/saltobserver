@@ -29,4 +29,4 @@ clean:
 	rm -f scripts/*.pyc
 
 test:
-	nosetests --with-coverage --cover-package=saltobserver 3>&1 1>&2 2>&3 | tee test_report.txt
+	nosetests --with-coverage --cover-package=saltobserver --with-tissue --tissue-ignore=E501 --tissue-fail-on-error 3>&1 1>&2 2>&3 | tee test_report.txt

@@ -16,7 +16,8 @@ import datetime
 from flask_frozen import Freezer
 
 # ugly hack is ugly
-import os.path, sys
+import os.path
+import sys
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir))
 from saltobserver import app
 
@@ -25,21 +26,25 @@ EXAMPLE_MINIONS = ['some.server.example.com', 'someother.server.example.com']
 
 freezer = Freezer(app)
 
+
 @freezer.register_generator
 def get_data_view():
     for minion in EXAMPLE_MINIONS:
         for jid in EXAMPLE_JIDS:
             yield "/_get_function_data/%s/%s/" % (minion, jid)
 
+
 @freezer.register_generator
 def function_view():
     for func in app.config['FUNCTION_QUICKLIST']:
         yield "/functions/%s/" % func
 
+
 @freezer.register_generator
 def job_view():
     for jid in EXAMPLE_JIDS:
         yield "/jobs/%s/" % jid
+
 
 @freezer.register_generator
 def history_view():
@@ -50,7 +55,8 @@ def history_view():
 if __name__ == '__main__':
     serv = redis.Redis()
     serv.flushdb()
-    jobs = [{
+    jobs = [
+        {
             "fun_args": [],
             "jid": EXAMPLE_JIDS[0],
             "return": {
@@ -62,7 +68,7 @@ if __name__ == '__main__':
                     "duration": 17.293,
                     "__run_num__": 34,
                     "changes": {}
-                    },
+                },
                 "file_|-/etc/salt/minion_|-/etc/salt/minion_|-managed": {
                     "comment": "File /etc/salt/minion updated",
                     "name": "/etc/salt/minion",
@@ -71,20 +77,21 @@ if __name__ == '__main__':
                     "duration": 727.88,
                     "__run_num__": 28,
                     "changes": "some"
-                    }
-                },
+                }
+            },
             "retcode": 0,
             "success": True,
             "fun": "state.highstate",
-            },
-            {
+        },
+        {
             "fun_args": [],
             "jid": EXAMPLE_JIDS[1],
             "return": True,
             "retcode": 0,
             "success": True,
             "fun": "test.ping",
-            }]
+        }
+    ]
 
     for job in jobs:
         for minion in EXAMPLE_MINIONS:

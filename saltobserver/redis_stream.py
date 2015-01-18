@@ -7,6 +7,7 @@ from distutils.version import StrictVersion
 import json
 import time
 
+
 class RedisStream(object):
 
     def __init__(self):

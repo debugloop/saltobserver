@@ -5,6 +5,7 @@ from redis import Redis
 
 from scripts.generate_return_data import ReturnDataGenerator
 
+
 class SaltobserverTestCase(unittest.TestCase):
     redis = Redis(connection_pool=saltobserver.redis_pool)
     rdg = ReturnDataGenerator(redis=Redis(connection_pool=saltobserver.redis_pool), minion_list=['some.minion.example.com', 'someother.minion.example.com'])

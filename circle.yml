@@ -4,6 +4,8 @@ general:
     - "saltobserver_app.log"
 
 machine:
+  timezone:
+    Europe/Berlin
   environment:
     SALTOBSERVER_SETTINGS: config.py
   python:
@@ -14,7 +16,7 @@ machine:
 dependencies:
   override:
     - pip install -r requirements.txt
-    - pip install nose coverage
+    - pip install nose coverage tissue
 
 test:
   override:
