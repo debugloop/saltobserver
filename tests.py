@@ -85,7 +85,6 @@ class SaltobserverTestCase(unittest.TestCase):
         # cover the case where a jid is omitted because it's no valid timestamp
         self.rdg.generate(jid="1234", fun="state.highstate")
         rv = self.app.get('/functions/state.highstate/')
-        print rv.data
         assert '''<h1>0.0</h1>
                 <div class="count-title">
                     ...times on average.
