@@ -1,11 +1,24 @@
-.PHONY: all deploy pypi-info authors clean test
+.PHONY: all pypirc deploy pypi-info authors clean test
 
-all: deploy clean
+all: clean
 
-deploy:
+pypirc:
+	@if test "$(PYPI_CREDENTIALS)" != ""; then \
+	    echo "generating ~/.pypirc"; \
+	    echo "[distutils]" > ~/.pypirc; \
+	    echo "index-servers = pypi" >> ~/.pypirc; \
+	    echo "[pypi]" >> ~/.pypirc; \
+	    echo "repository: https://pypi.python.org/pypi" >> ~/.pypirc; \
+	    echo -n "username: " >> ~/.pypirc; \
+	    echo $(PYPI_CREDENTIALS) | cut -d ':' -f 1 >> ~/.pypirc; \
+	    echo -n "password: " >> ~/.pypirc; \
+	    echo $(PYPI_CREDENTIALS) | cut -d ':' -f 2 >> ~/.pypirc; \
+	fi
+
+deploy: pypirc
 	python setup.py sdist upload
 
-pypi-info:
+pypi-info: pypirc
 	python setup.py register
 
 authors:
