@@ -44,4 +44,4 @@ clean:
 
 # test requires the following pypi packages: nose coverage tissue
 test:
-	nosetests --with-xunit --with-coverage --cover-package=saltobserver --with-tissue --tissue-ignore=E501 --tissue-fail-on-error 3>&1 1>&2 2>&3 | tee test_report.txt
+	nosetests --with-xunit --xunit-file=${CIRCLE_TEST_REPORTS}nosetests.xml --with-coverage --cover-package=saltobserver --with-tissue --tissue-ignore=E501 --tissue-fail-on-error 3>&1 1>&2 2>&3 | tee test_report.txt
