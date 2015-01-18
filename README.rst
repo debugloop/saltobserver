@@ -1,6 +1,6 @@
-Salt Observer
-=============
-.. image:: https://circleci.com/gh/analogbyte/saltobserver/tree/master.svg?style=svg
+Salt Observer |img|
+===================
+.. |img| image:: https://circleci.com/gh/analogbyte/saltobserver/tree/master.svg?style=svg
        :target: https://circleci.com/gh/analogbyte/saltobserver/tree/master
 
 This is a simple webapp for presenting data as offered by `Salt's Redis
