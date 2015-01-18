@@ -24,3 +24,6 @@ clean:
 	rm -f *.log
 	rm -f *.pyc
 	rm -f saltobserver/*.pyc
+
+test:
+	nosetests --with-coverage --cover-package=saltobserver
