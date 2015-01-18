@@ -22,3 +22,9 @@ test:
   override:
     - make test
 
+deployment:
+  pypi:
+    branch: release
+    commands:
+      - make pypi-info
+      - make deploy
