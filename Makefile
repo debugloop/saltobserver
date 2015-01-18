@@ -1,4 +1,4 @@
-.PHONY: all deploy pypi-info authors clean
+.PHONY: all deploy pypi-info authors clean test
 
 all: deploy clean
 
