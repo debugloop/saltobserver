@@ -2,6 +2,7 @@ general:
   artifacts:
     - "test_report.txt"
     - "saltobserver_app.log"
+    - "nosetests.xml"
 
 machine:
   timezone:
