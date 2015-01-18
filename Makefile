@@ -35,8 +35,6 @@ clean:
 	rm -rf saltobserver.egg-info/
 	rm -rf dist/
 	rm -f dump.rdb
-	rm -f nosetests.xml
-	rm -f test_report.txt
 	rm -f *.log
 	rm -f *.pyc
 	rm -f saltobserver/*.pyc
@@ -44,4 +42,4 @@ clean:
 
 # test requires the following pypi packages: nose coverage tissue
 test:
-	nosetests --with-xunit --xunit-file=${CIRCLE_TEST_REPORTS}nosetests.xml --with-coverage --cover-package=saltobserver --with-tissue --tissue-ignore=E501 --tissue-fail-on-error 3>&1 1>&2 2>&3 | tee test_report.txt
+	nosetests --with-coverage --cover-package=saltobserver --with-tissue --tissue-ignore=E501 --tissue-fail-on-error
