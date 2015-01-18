@@ -1,3 +1,7 @@
+general:
+  artifacts:
+    - "test_report.txt"
+
 machine:
   environment:
     SALTOBSERVER_SETTINGS: config.py
@@ -14,3 +18,4 @@ dependencies:
 test:
   override:
     - make test
+

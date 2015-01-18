@@ -22,10 +22,11 @@ clean:
 	rm -rf saltobserver.egg-info/
 	rm -rf dist/
 	rm -f dump.rdb
+	rm -f test_report.txt
 	rm -f *.log
 	rm -f *.pyc
 	rm -f saltobserver/*.pyc
 	rm -f scripts/*.pyc
 
 test:
-	nosetests --with-coverage --cover-package=saltobserver
+	nosetests --with-coverage --cover-package=saltobserver > test_report.txt
