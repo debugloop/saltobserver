@@ -2,6 +2,9 @@ general:
   artifacts:
     - "test_report.txt"
     - "saltobserver_app.log"
+  branches:
+    ignore:
+      - gh-pages
 
 machine:
   timezone:
