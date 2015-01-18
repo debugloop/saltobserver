@@ -1,0 +1,16 @@
+machine:
+  environment:
+    SALTOBSERVER_SETTINGS: config.py
+  python:
+    version: 2.7.8
+  services:
+    - redis
+
+dependencies:
+  override:
+    - pip install -r requirements.txt
+    - pip install nose coverage
+
+test:
+  override:
+    - make test
