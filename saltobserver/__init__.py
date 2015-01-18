@@ -32,6 +32,7 @@ redis_pool = ConnectionPool(
 redis = Redis(connection_pool=redis_pool)
 try:
     redis.ping()
+    app.logger.debug("Connected to Redis, using version %s." % redis.info()['redis_version'])
 except ConnectionError:
     app.logger.error("Unable to connect to Redis at %s:%s" % (app.config['REDIS_HOST'], app.config['REDIS_PORT']))
     print "Unable to connect to Redis at %s:%s" % (app.config['REDIS_HOST'], app.config['REDIS_PORT'])
@@ -42,6 +43,7 @@ if app.config['USE_LIVEUPDATES']:
     try:
         stream = RedisStream()
         stream.start()
+        app.logger.debug("Live updates started successfully.")
     except NotImplementedError:
         app.config['USE_LIVEUPDATES'] = False  # override configuration
         app.logger.error("Live updates not available, Redis version not sufficient (minimum is v2.8).")
