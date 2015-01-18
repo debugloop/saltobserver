@@ -58,3 +58,6 @@ scripts/frozen/
 
 # Redis Dumps
 dump.rdb
+
+# Test reports
+test_report.txt

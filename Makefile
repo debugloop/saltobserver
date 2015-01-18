@@ -29,4 +29,4 @@ clean:
 	rm -f scripts/*.pyc
 
 test:
-	nosetests --with-coverage --cover-package=saltobserver > test_report.txt
+	nosetests --with-coverage --cover-package=saltobserver 3>&1 1>&2 2>&3 | tee test_report.txt
