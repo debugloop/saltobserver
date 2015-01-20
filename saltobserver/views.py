@@ -31,7 +31,7 @@ def jobs(jid):
     try:
         timestamp = time.strptime(jid, "%Y%m%d%H%M%S%f")
         at_time = time.strftime('%Y-%m-%d, at %H:%M:%S', timestamp)
-    except Exception:
+    except Exception:  # TODO: make this more specific
         at_time = None
     return render_template('jobs.html', minions=ret, time=at_time, function=function)
 
@@ -79,7 +79,7 @@ def functions(function):
             if times_run > 0:
                 times_list.append(times_run)
             functions.append((minion, jid, success, time.strftime('%Y-%m-%d, at %H:%M:%S', timestamp)))
-        except Exception:
+        except Exception:  # TODO: make this more specific
             continue
     return render_template('functions.html', functions=functions, average_run=float(sum(times_list)) / len(times_list) if len(times_list) > 0 else 0)
 

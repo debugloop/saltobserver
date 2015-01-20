@@ -1,6 +1,8 @@
 from flask import Flask
 
 app = Flask(__name__)
+# TODO: make config reloadable, or devise a way to reinstantiate stuff after
+# changing values in the app.config object (redis)
 app.config.from_object('saltobserver.config')
 try:
     app.config.from_envvar('SALTOBSERVER_SETTINGS')

@@ -18,6 +18,7 @@ class RedisStream(object):
             raise NotImplementedError
         self.redis.config_set('notify-keyspace-events', 'Kls')
         self.pubsub = self.redis.pubsub()
+        # TODO: update subscription on newcomer minions
         self.pubsub.psubscribe(["__keyspace@0__:{0}:*.*".format(minion) for minion in self.redis.smembers('minions')])
         self.clients = list()
 
@@ -41,7 +42,7 @@ class RedisStream(object):
         try:
             client.send(json.dumps(data))
             app.logger.debug("Data for jid %s sent to %s (function %s)" % (data['jid'], client, function))
-        except Exception as e:
+        except Exception as e:  # TODO: make this more specific
             self.clients.remove(client_tupl)
             app.logger.debug("%s (function %s) removed with reason: %s" % (client, function, e))
 
