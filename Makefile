@@ -36,9 +36,7 @@ clean:
 	rm -rf dist/
 	rm -f dump.rdb
 	rm -f *.log
-	rm -f *.pyc
-	rm -f saltobserver/*.pyc
-	rm -f scripts/*.pyc
+	find . -name '*.pyc' -exec rm -f {} +
 
 # test requires the following pypi packages: nose coverage tissue
 test:
