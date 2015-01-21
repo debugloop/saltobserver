@@ -82,6 +82,13 @@ class SaltobserverTestCase(unittest.TestCase):
                 <div class="count-title">
                     ...times on average.
                 </div>''' in rv.data
+        # cover the case where a minion has never run the particular function
+        ReturnDataGenerator(redis=Redis(connection_pool=saltobserver.redis_pool), minion_list=["onemore.minion.example.com"]).generate(jid="20150118142103074916", fun="test.ping")
+        rv = self.app.get('/functions/state.highstate/')
+        assert '''<h1>2</h1>
+                <div class="count-title">
+                    Minions have run this function...
+                </div>''' in rv.data
         # cover the case where a jid is omitted because it's no valid timestamp
         self.rdg.generate(jid="1234", fun="state.highstate")
         rv = self.app.get('/functions/state.highstate/')
