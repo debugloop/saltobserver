@@ -26,6 +26,8 @@
                     {% for id in config.FUNCTION_QUICKLIST %}
                     <li><a {% if id == active_page %}class="pure-button-active"{% endif %} href="{{ url_for('functions', function=id|e) }}">{{ id|e }}</a></li>
                     {% endfor %}
+                    {% block quicklist %}
+                    {% endblock %}
                     <li class="pure-menu-heading">Search</li>
                     {% set search_bar = [ ('Functions', 'functionsearch'), ('Jobs', 'jobsearch'), ('History', 'historysearch') ] -%}
                     {% for caption, href in search_bar %}
