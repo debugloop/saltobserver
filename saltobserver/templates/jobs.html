@@ -1,12 +1,6 @@
 {% extends "contentpage.html" %}
 {% block title %}Salt Observer: {{ request.view_args.get('jid') }}{% endblock %}
 {% set active_page = function %}
-{# TODO #}
-{# {% if function not in config.FUNCTION_QUICKLIST %} #}
-{# {% block quicklist %} #}
-{# <li><a class="pure-button-active" href="{{ url_for('functions', function=function|e) }}">{{ function|e }}</a></li> #}
-{# {% endblock %} #}
-{# {% endif %} #}
 
 {% block list %}
 <div id="list" class="pure-u-1">
