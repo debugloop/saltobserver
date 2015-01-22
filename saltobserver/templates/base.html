@@ -26,7 +26,7 @@
                     {% for id in config.FUNCTION_QUICKLIST %}
                     <li><a {% if id == active_page %}class="pure-button-active"{% endif %} href="{{ url_for('functions', function=id|e) }}">{{ id|e }}</a></li>
                     {% endfor %}
-                    {% if active_page not in config.FUNCTION_QUICKLIST %}
+                    {% if active_page and active_page not in config.FUNCTION_QUICKLIST %}
                     <li><a class="pure-button-active" href="{{ url_for('functions', function=active_page|e) }}">{{ active_page|e }}</a></li>
                     {% endif %}
                     <li class="pure-menu-heading">Search</li>
