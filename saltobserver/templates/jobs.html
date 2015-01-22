@@ -21,7 +21,17 @@
             <div class="count-box">
                 <h1>{{ minions|length }}</h1>
                 <div class="count-title">
-                    Minion{{ minions|length|pluralize }} ha{{ minions|length|pluralize("s", "ve") }} run this job.
+                    ...Minion{{ minions|length|pluralize }} ha{{ minions|length|pluralize("s", "ve") }} run this job.
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="pure-g">
+        <div class="pure-u-1">
+            <div class="count-box">
+                <h1>{{ successful_runs }}</h1>
+                <div class="count-title">
+                    ...{{ function|length|pluralize("", "of them") }}successfully.
                 </div>
             </div>
         </div>

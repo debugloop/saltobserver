@@ -30,7 +30,10 @@ class RedisStream(object):
                 function = message['channel'].split(':')[2]
                 jid = self.redis.lindex('{0}:{1}'.format(minion_id, function), 0)
                 success = True if json.loads(self.redis.get('{0}:{1}'.format(minion_id, jid))).get('retcode') == 0 else False
-                timestamp = time.strptime(jid, "%Y%m%d%H%M%S%f")  # TODO: add try except
+                try:
+                    timestamp = time.strptime(jid, "%Y%m%d%H%M%S%f")
+                except ValueError:
+                    continue  # do not pass info with faked jid's
                 yield dict(minion_id=minion_id, function=function, jid=jid, success=success, time=time.strftime('%Y-%m-%d, at %H:%M:%S', timestamp))
 
     def register(self, client, function):
@@ -42,7 +45,7 @@ class RedisStream(object):
         try:
             client.send(json.dumps(data))
             app.logger.debug("Data for jid %s sent to %s (function %s)" % (data['jid'], client, function))
-        except Exception as e:  # TODO: make this more specific
+        except Exception as e:  # TODO: this is either a ValueError from json, or some other exception from gevents websocket stuff
             self.clients.remove(client_tupl)
             app.logger.debug("%s (function %s) removed with reason: %s" % (client, function, e))
 

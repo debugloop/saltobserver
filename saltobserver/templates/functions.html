@@ -22,7 +22,7 @@
             <div class="count-box">
                 <h1>{{ functions|length }}</h1>
                 <div class="count-title">
-                    Minion{{ functions|length|pluralize }} ha{{ functions|length|pluralize("s", "ve") }} run this function...
+                    ...Minion{{ functions|length|pluralize }} ha{{ functions|length|pluralize("s", "ve") }} run this function.
                 </div>
             </div>
         </div>
@@ -30,9 +30,9 @@
     <div class="pure-g">
         <div class="pure-u-1">
             <div class="count-box">
-                <h1>{{ average_run|round(1) }}</h1>
+                <h1>{{ successful_runs }}</h1>
                 <div class="count-title">
-                    ...time{{ average_run|pluralize }}{{ functions|length|pluralize("", " on average") }}.
+                    ...{{ function|length|pluralize("", "of them ") }}successfully.
                 </div>
             </div>
         </div>

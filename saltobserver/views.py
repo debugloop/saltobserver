@@ -49,7 +49,7 @@ def jobs(jid):
         at_time = time.strftime('%Y-%m-%d, at %H:%M:%S', timestamp)
     except ValueError:
         at_time = None  # JS will gobble this
-    return render_template('jobs.html', minions=ret, time=at_time, function=function)
+    return render_template('jobs.html', minions=ret, time=at_time, successful_runs=len([success for _, success in ret if success]), function=function)
 
 
 @app.route('/jobs/')
@@ -94,9 +94,8 @@ def functions(function):
             timestring = time.strftime('%Y-%m-%d, at %H:%M:%S', timestamp)
         except ValueError:
             continue  # ignore invalid
-        times_list.append(redis.llen('{0}:{1}'.format(minion, function)))
         functions.append((minion, jid, _get_success(minion, jid), timestring))
-    return render_template('functions.html', functions=functions, average_run=float(sum(times_list)) / len(times_list) if len(times_list) > 0 else 0)
+    return render_template('functions.html', functions=functions, successful_runs=len([success for _, _, success, _  in functions if success]))
 
 
 @app.route('/functions/')
