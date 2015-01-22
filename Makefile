@@ -40,4 +40,5 @@ clean:
 
 # test requires the following pypi packages: nose coverage tissue
 test:
-	nosetests --with-coverage --cover-package=saltobserver --with-tissue --tissue-ignore=E501 --tissue-fail-on-error
+	nosetests --with-coverage --cover-package=saltobserver --with-tissue --tissue-ignore=E501 --tissue-fail-on-error ${ADDITIONAL_ARGS}
+
