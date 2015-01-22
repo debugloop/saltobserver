@@ -8,7 +8,7 @@ class ReturnDataGenerator:
         self.redis = redis
         self.minions = minion_list
 
-    def generate(self, jid='{0:%Y%m%d%H%M%S%f}'.format(datetime.datetime.now()), fun="state.highstate"):
+    def generate(self, jid='{0:%Y%m%d%H%M%S%f}'.format(datetime.datetime.now()), fun="state.highstate", fail=False):
         ret = {
             "fun_args": [],
             "jid": jid,
@@ -32,7 +32,7 @@ class ReturnDataGenerator:
                     "changes": "some"
                 }
             },
-            "retcode": 0,
+            "retcode": int(fail),
             "success": True,
             "fun": fun,
         }
