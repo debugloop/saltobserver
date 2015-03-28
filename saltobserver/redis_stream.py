@@ -18,8 +18,8 @@ class RedisStream(object):
             raise NotImplementedError
         self.redis.config_set('notify-keyspace-events', 'Ks')
         self.pubsub = self.redis.pubsub()
-        # TODO: update subscription on newcomer minions
-        self.pubsub.psubscribe(["__keyspace@0__:{0}:*.*".format(minion) for minion in self.redis.smembers('minions')])
+        self.pubsub.psubscribe("__keyspace@0__:*:*.*")
+        # TODO: make redis db number (this ^) configurable
         self.clients = list()
 
     def _generator(self):
