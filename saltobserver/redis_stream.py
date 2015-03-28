@@ -16,7 +16,7 @@ class RedisStream(object):
         minimum_version = StrictVersion("2.8.0")
         if actual_version < minimum_version:
             raise NotImplementedError
-        self.redis.config_set('notify-keyspace-events', 'Kls')
+        self.redis.config_set('notify-keyspace-events', 'Ks')
         self.pubsub = self.redis.pubsub()
         # TODO: update subscription on newcomer minions
         self.pubsub.psubscribe(["__keyspace@0__:{0}:*.*".format(minion) for minion in self.redis.smembers('minions')])
