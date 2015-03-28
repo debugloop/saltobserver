@@ -1,5 +1,5 @@
 from saltobserver import app, redis_pool
-import gevent
+from threading import Thread
 
 from redis import Redis
 from distutils.version import StrictVersion
@@ -8,9 +8,11 @@ import json
 import time
 
 
-class RedisStream(object):
+class RedisStream(Thread):
 
     def __init__(self):
+        Thread.__init__(self)
+        self.daemon = True
         self.redis = Redis(connection_pool=redis_pool)
         actual_version = StrictVersion(self.redis.info()['redis_version'])
         minimum_version = StrictVersion("2.8.0")
@@ -45,7 +47,7 @@ class RedisStream(object):
         try:
             client.send(json.dumps(data))
             app.logger.debug("Data for jid %s sent to %s (function %s)" % (data['jid'], client, function))
-        except Exception as e:  # TODO: this is either a ValueError from json, or some other exception from gevents websocket stuff
+        except Exception as e:  # TODO: this is either a ValueError from json, or some other exception from websocket stuff
             self.clients.remove(client_tupl)
             app.logger.debug("%s (function %s) removed with reason: %s" % (client, function, e))
 
@@ -54,9 +56,6 @@ class RedisStream(object):
             sent = 0
             for client, function in self.clients:
                 if data['function'] == function:
-                    gevent.spawn(self.send_or_discard_connection, (client, function), data)
+                    self.send_or_discard_connection((client, function), data)
                     sent = sent + 1
             app.logger.debug("Attempted to send data packet sent to %s of %s clients." % (sent, len(self.clients)))
-
-    def start(self):
-        gevent.spawn(self.run)

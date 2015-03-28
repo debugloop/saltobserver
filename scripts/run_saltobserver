@@ -4,4 +4,4 @@
 # the log-file parameter.
 # When calling Gunicorn from your own script and using Supervisord, be sure to
 # use exec so you can stop and restart your Saltobserver instance.
-exec gunicorn --log-file=saltobserver_gunicorn.log -k flask_sockets.worker $@ saltobserver:app
+exec uwsgi --master --logto saltobserver_uwsgi.log --http :8000 --http-websockets $@ --wsgi saltobserver:app
